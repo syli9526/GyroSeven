@@ -1,2 +1,2 @@
 # GyroSeven
-##### game.
+##### Android Application Game.
