@@ -3,7 +3,7 @@ package com.teamseven.gyroseven;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
-import com.teamseven.gameframework.GameView;
+import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.SpriteAnimation;
 
 public class Player extends SpriteAnimation {
@@ -13,9 +13,8 @@ public class Player extends SpriteAnimation {
     public Player(Bitmap _bitmap) {
         super(_bitmap);
 
-        this.initSpriteData(62*3,104*3,5,6);
-        this.setPosition(GameView.SCREEN_WIDTH / 2 - (m_bitmap.getWidth() / m_iFrames / 2),
-                (int)(GameView.SCREEN_HEIGHT * 0.6));
+        super.initSpriteData(getBitmapWidth() / 6, getBitmapHeight(), 10, 6);
+        super.setPosition(AppManager.getInstance().getDeviceSize().x / 2, AppManager.getInstance().getDeviceSize().y - getBitmapHeight());
 
         m_life = 3;
     }

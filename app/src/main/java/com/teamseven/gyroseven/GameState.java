@@ -1,16 +1,14 @@
 package com.teamseven.gyroseven;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+
 import android.hardware.SensorEvent;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.CollisionManager;
-import com.teamseven.gameframework.GameView;
 import com.teamseven.gameframework.IState;
 
 import java.util.ArrayList;
@@ -40,12 +38,13 @@ public class GameState implements IState {
         long gameTime = System.currentTimeMillis();
         m_player.update(gameTime);
         m_background.update(gameTime);
-
-        for (int i = m_enemylist.size() - 1; i >= 0; i--) {
+        for (int i = m_enemylist.size() - 1; i >= 0; i--){
             Enemy enemy = m_enemylist.get(i);
-            enemy.update(gameTime);
-            if (enemy.state == Enemy.STATE_OUT) m_enemylist.remove(i);
+            enemy.move(m_player.getX(), m_player.getY());
+            if(enemy.state == Constants.STATE_OUT) m_enemylist.remove(i);
+            enemy.update();
         }
+
         makeEnemy();
         checkCollision();
     }
@@ -78,16 +77,28 @@ public class GameState implements IState {
     }
 
     public void makeEnemy() {
-        if (System.currentTimeMillis() - lastRegenEnemy >= 1000) {
+
+        int posX[] = {randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), AppManager.getInstance().getDeviceSize().x, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), 0,randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x)};
+        int posY[] = {0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), AppManager.getInstance().getDeviceSize().y, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y),0};
+
+        if (System.currentTimeMillis() - lastRegenEnemy >= 500) {
             lastRegenEnemy = System.currentTimeMillis();
 
-            Enemy enemy = new Enemy_1();
+            Enemy crw[] = new Enemy_1[4];
 
-            enemy.setPosition(randEnemy.nextInt(
-                    GameView.SCREEN_WIDTH - enemy.getBitmap().getWidth() / enemy.getIFrames() / 2),
-                    -180);
+            for (int i = 0; i < crw.length; i++) {
+                crw[i] = new Enemy_1();
+                crw[i].movePattern = i + randEnemy.nextInt(1);
+                if (posX[i] == 0)
+                    crw[i].setPosition(-crw[i].width, posY[i]);
+                else if (posY[i] == 0)
+                    crw[i].setPosition(posX[i], -crw[i].height);
+                else
+                    crw[i].setPosition(posX[i], posY[i]);
+                m_enemylist.add(crw[i]);
+            }
 
-            m_enemylist.add(enemy);
+
         }
     }
 

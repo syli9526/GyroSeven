@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.teamseven.gyroseven.GameState;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
@@ -28,6 +30,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         AppManager.getInstance().setGameView(this);
         AppManager.getInstance().setResources(getResources());
+        AppManager.getInstance().setContext(context);
 
         getHolder().addCallback(this); // 콜백상태 지정
         m_thread = new GameViewThread(getHolder(), this);
