@@ -48,6 +48,8 @@ public class SpriteAnimation extends GraphicObject {
                 m_currentFrame * (getBitmap().getWidth() / getIFrames()), 0,
         getBitmap().getWidth() / getIFrames(), getBitmap().getHeight(), m_matrix, true);
 
+       //Bitmap resize = Bitmap.createScaledBitmap(rotate, getBitmap().getWidth() / getIFrames() / 5, getBitmap().getHeight() / 5, true);
+
         _canvas.drawBitmap(rotate, m_x, m_y, null);
     }
 

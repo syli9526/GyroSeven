@@ -8,20 +8,20 @@ import com.teamseven.gameframework.GameView;
 import com.teamseven.gameframework.GraphicObject;
 
 public class BackGround extends GraphicObject {
-    static final float SCROLL_SPEED = 2.0f;
-    private float m_scroll = -2000 + 480;
+    //static final float SCROLL_SPEED = 2.0f;
+    //private float m_scroll = -2000 + 480;
 
     public BackGround(int backType) {
         super(null);
 
         m_bitmap = AppManager.getInstance().getBitmap(R.drawable.background1);
-        m_bitmap = Bitmap.createScaledBitmap(m_bitmap, GameView.SCREEN_WIDTH, m_bitmap.getHeight(), true);
+        m_bitmap = Bitmap.createScaledBitmap(m_bitmap, GameView.SCREEN_WIDTH, GameView.SCREEN_HEIGHT, true);
     }
 
     void update(long gameTime) {
-        m_scroll = m_scroll + SCROLL_SPEED;
-        if (m_scroll >= 0) m_scroll = -2000 + 480;
-        setPosition(0, (int)m_scroll);
+        //m_scroll = m_scroll + SCROLL_SPEED;
+        //if (m_scroll >= 0) m_scroll = -2000 + 480;
+        //setPosition(0, (int)m_scroll);
     }
 
     @Override

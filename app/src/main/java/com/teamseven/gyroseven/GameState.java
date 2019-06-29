@@ -46,7 +46,7 @@ public class GameState implements IState {
         long gameTime = System.currentTimeMillis();
         m_player.update(gameTime);
         m_player.move(m_pitch, m_roll);
-        m_background.update(gameTime);
+        //m_background.update(gameTime);
 
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
             Enemy enemy = m_enemylist.get(i);

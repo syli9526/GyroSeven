@@ -16,7 +16,7 @@ public class Player extends SpriteAnimation {
     public Player(Bitmap _bitmap) {
         super(_bitmap);
 
-        this.initSpriteData(62*3,104*3,5,6);
+        this.initSpriteData(300, 300,5,4);
         this.setPosition(GameView.SCREEN_WIDTH / 2 - (m_bitmap.getWidth() / m_iFrames / 2),
                 (int)(GameView.SCREEN_HEIGHT * 0.6));
 
