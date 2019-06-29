@@ -3,8 +3,9 @@ package com.teamseven.gyroseven;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.util.Log;
+import android.hardware.SensorManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -17,12 +18,17 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GameState implements IState {
+    String m_str1 = "";
+    String m_str2 = "";
+
     private Player m_player;
     private BackGround m_background;
     private ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
-
     long lastRegenEnemy = System.currentTimeMillis();
     Random randEnemy = new Random();
+
+    float m_roll;
+    float m_pitch;
 
     @Override
     public void init() {
@@ -39,6 +45,7 @@ public class GameState implements IState {
     public void update() {
         long gameTime = System.currentTimeMillis();
         m_player.update(gameTime);
+        m_player.move(m_pitch, m_roll);
         m_background.update(gameTime);
 
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
@@ -58,11 +65,31 @@ public class GameState implements IState {
         }
 
         m_player.draw(_canvas);
+
+        Paint p = new Paint( );
+        p.setTextSize(40);
+        p.setColor(Color.BLACK);
+        _canvas.drawText(m_str1, 0, 140, p);
+        _canvas.drawText(m_str2, 0, 180, p);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        synchronized (this) {
+            switch (event.sensor.getType( )) {
+                case Sensor.TYPE_ORIENTATION:
+                    m_pitch = event.values[1];
+                    m_roll = event.values[2];
+                    m_str1 = "Pitch   : " + Integer.toString((int)m_pitch);
+                    m_str2 = "Roll    : " + Integer.toString((int)m_roll);
 
+                    if (m_pitch > 90.0f)        { m_pitch = 90.0f; }
+                    else if (m_pitch < -90.0f)  { m_pitch = -90.0f; }
+
+                    if (m_roll > 90.0f)         { m_roll = 90.0f; }
+                    else if (m_roll < -90.0f)   { m_roll = -90.0f; }
+            }
+        }
     }
 
     @Override

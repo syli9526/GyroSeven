@@ -15,7 +15,6 @@ public class GraphicObject {
 
     public void draw(Canvas _canvas) {
         _canvas.drawBitmap(m_bitmap, m_x, m_y, null);
-
     }
 
     public void setPosition(int _x, int _y) {
@@ -24,6 +23,7 @@ public class GraphicObject {
     }
 
     public Bitmap getBitmap() { return m_bitmap; }
+    public void setBitmap(Bitmap _bitmap) { m_bitmap = _bitmap; }
     public int getX() { return m_x; }
     public int getY() { return m_y; }
 }

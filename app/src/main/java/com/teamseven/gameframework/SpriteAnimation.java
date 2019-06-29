@@ -2,6 +2,7 @@ package com.teamseven.gameframework;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 
 public class SpriteAnimation extends GraphicObject {
@@ -13,11 +14,13 @@ public class SpriteAnimation extends GraphicObject {
     protected int m_spriteWIdth;
     protected int m_spriteHeight;
     protected long m_frameTimer;
+    protected Matrix m_matrix;
 
     public SpriteAnimation(Bitmap _bitmap) {
         super(_bitmap);
 
         m_rect = new Rect(0,0,0,0);
+        m_matrix = new Matrix();
         m_frameTimer = 0;
         m_currentFrame = 0;
     }
@@ -39,7 +42,13 @@ public class SpriteAnimation extends GraphicObject {
         Rect dest = new Rect(getX(), getY(),
                 getX() + m_spriteWIdth, getY() + m_spriteHeight);
 
-        _canvas.drawBitmap(getBitmap(), m_rect, dest, null);
+        //_canvas.drawBitmap(getBitmap(), m_rect, dest, null);
+
+       Bitmap rotate = Bitmap.createBitmap(getBitmap(),
+                m_currentFrame * (getBitmap().getWidth() / getIFrames()), 0,
+        getBitmap().getWidth() / getIFrames(), getBitmap().getHeight(), m_matrix, true);
+
+        _canvas.drawBitmap(rotate, m_x, m_y, null);
     }
 
     public void update(long gameTime) {

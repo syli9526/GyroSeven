@@ -2,6 +2,10 @@ package com.teamseven.gameframework;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -10,10 +14,11 @@ import android.view.SurfaceView;
 
 import com.teamseven.gyroseven.GameState;
 
-public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-
+public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
     public static int SCREEN_WIDTH;
     public static int SCREEN_HEIGHT;
+
+    SensorManager m_sensorManager;
 
     private IState m_state;
     private GameViewThread m_thread;
@@ -21,6 +26,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public GameView(Context context) {
         super(context);
         setFocusable(true);
+
+        m_sensorManager = (SensorManager) context.getSystemService
+                (Context. SENSOR_SERVICE);
+        m_sensorManager.registerListener( this,
+                m_sensorManager.getDefaultSensor(Sensor. TYPE_ORIENTATION),
+                SensorManager.SENSOR_DELAY_GAME);
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
         SCREEN_WIDTH = dm.widthPixels;
@@ -79,6 +90,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         m_state.onKeyDown(keyCode, event);
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        m_state.onSensorChanged(sensorEvent);
+        invalidate();
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 
     public void changeGameState(IState _state) {
