@@ -119,8 +119,8 @@ public class GameState implements IState {
     }
 
     public void checkCollision() {
-        for (int i = m_enemylist.size()-1; i >= 0; i--) {
-            if (CollisionManager.checkBoxToBox(m_player.m_boundBox,
+        for (int i = m_enemylist.size() - 1; i >= 0; i--) {
+            if (CollisionManager.checkCircleToCircle(m_player.m_boundBox,
                     m_enemylist.get(i).m_boundBox)) {
                 m_enemylist.remove( i);
                 m_player.destroyPlayer();

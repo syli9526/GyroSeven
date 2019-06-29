@@ -42,15 +42,11 @@ public class SpriteAnimation extends GraphicObject {
         Rect dest = new Rect(getX(), getY(),
                 getX() + m_spriteWIdth, getY() + m_spriteHeight);
 
-        //_canvas.drawBitmap(getBitmap(), m_rect, dest, null);
-
-       Bitmap rotate = Bitmap.createBitmap(getBitmap(),
-                m_currentFrame * (getBitmap().getWidth() / getIFrames()), 0,
-        getBitmap().getWidth() / getIFrames(), getBitmap().getHeight(), m_matrix, true);
+        _canvas.drawBitmap(getBitmap(), m_rect, dest, null);
 
        //Bitmap resize = Bitmap.createScaledBitmap(rotate, getBitmap().getWidth() / getIFrames() / 5, getBitmap().getHeight() / 5, true);
 
-        _canvas.drawBitmap(rotate, m_x, m_y, null);
+        //_canvas.drawBitmap(rotate, m_x, m_y, null);
     }
 
     public void update(long gameTime) {
