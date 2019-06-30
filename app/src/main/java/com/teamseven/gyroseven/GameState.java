@@ -25,6 +25,7 @@ public class GameState implements IState {
     private Player m_player;
     private BackGround m_background;
     private ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
+    private Heart m_heart;
 
     private int frequency = 2700;
     private int frequency_2 = 5000;
@@ -43,6 +44,7 @@ public class GameState implements IState {
     public void init() {
         m_player = new Player(AppManager.getInstance().getBitmap(R.drawable.player_sprite));
         m_background = new BackGround(0);
+        m_heart = new Heart();
     }
 
     @Override
@@ -88,6 +90,12 @@ public class GameState implements IState {
             enemy.draw(_canvas);
         }
         m_player.draw(_canvas);
+
+        for (int i = 0; i < m_player.getLife(); i++) {
+            m_heart.setPosition(5+ m_heart.getBitmap().getWidth() * i, 5);
+            m_heart.draw(_canvas);
+        }
+
 
         Paint p = new Paint();
         p.setTextSize(40);
@@ -172,7 +180,7 @@ public class GameState implements IState {
             if (CollisionManager.checkCircleToCircle(m_player.m_boundBox,
                     m_enemylist.get(i).m_boundBox)) {
                 m_enemylist.remove(i);
-                m_player.destroyPlayer();
+                m_player.damagePlayer();
                 if (m_player.getLife() <= 0) {
                     //System.exit(0);
                 }
