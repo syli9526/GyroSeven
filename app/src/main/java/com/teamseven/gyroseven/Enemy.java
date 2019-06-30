@@ -65,7 +65,7 @@ public class Enemy extends GraphicObject {
     }
 
     public void speedUp(float plus){
-        this.speed  += plus;
+        this.speed += plus;
     }
 
     @Override

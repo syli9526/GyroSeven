@@ -17,27 +17,27 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GameState implements IState {
-    String m_str1 = "";
-    String m_str2 = "";
     String m_level = "";
 
-    private Player m_player;
-    private BackGround m_background;
-    private ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
-    private Heart m_heart;
+    protected Player m_player;
+    protected BackGround m_background;
+    protected ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
+    protected Heart m_heart;
+    protected ArrayList<Item> m_itemlist = new ArrayList<Item>();
 
-    private int frequency = 2700;
-    private int frequency_2 = 5000;
-    private int level = 1;
-    long lastRegenEnemy = System.currentTimeMillis();
-    long lastRegenEnemy_2 = System.currentTimeMillis();
-    long lastLevelUp = System.currentTimeMillis();
+    protected int frequency = 2700;
+    protected int frequency_2 = 5000;
+    protected int level = 1;
+    protected long lastRegenEnemy = System.currentTimeMillis();
+    protected long lastRegenEnemy_2 = System.currentTimeMillis();
+    protected long lastLevelUp = System.currentTimeMillis();
+    protected long lastReagenItem = System.currentTimeMillis();
 
+    protected Random randItem = new Random();
+    protected Random randEnemy = new Random();
 
-    Random randEnemy = new Random();
-
-    float m_roll;
-    float m_pitch;
+    protected float m_roll;
+    protected float m_pitch;
 
     @Override
     public void init() {
@@ -78,7 +78,13 @@ public class GameState implements IState {
             enemy.update();
         }
 
+        for (int i = m_itemlist.size() - 1; i >= 0; i--) {
+            Item item = m_itemlist.get(i);
+            item.update(gameTime);
+        }
+
         makeEnemy();
+        makeItem(gameTime);
         checkCollision();
     }
 
@@ -90,18 +96,19 @@ public class GameState implements IState {
         }
         m_player.draw(_canvas);
 
+        for (Item item : m_itemlist) {
+            item.draw(_canvas);
+        }
+
         for (int i = 0; i < m_player.getLife(); i++) {
             m_heart.setPosition(5+ m_heart.getBitmap().getWidth() * i, 5);
             m_heart.draw(_canvas);
         }
 
-
         Paint p = new Paint();
         p.setTextSize(40);
         p.setColor(Color.BLACK);
-        m_level = "Level :" + Integer.toString(level);
-        _canvas.drawText(m_str1, 0, 140, p);
-        _canvas.drawText(m_str2, 0, 180, p);
+        m_level = "Level : " + Integer.toString(level);
         _canvas.drawText(m_level, 0, 220, p);
     }
 
@@ -112,8 +119,6 @@ public class GameState implements IState {
                 case Sensor.TYPE_ORIENTATION:
                     m_pitch = event.values[1];
                     m_roll = event.values[2];
-                    m_str1 = "Pitch   : " + Integer.toString((int) m_pitch);
-                    m_str2 = "Roll    : " + Integer.toString((int) m_roll);
 
                     if (m_pitch > 90.0f) {
                         m_pitch = 90.0f;
@@ -142,10 +147,28 @@ public class GameState implements IState {
         return true;
     }
 
+    public void makeItem(long gameTime) {
+        int itemNumber = randItem.nextInt(1);
+
+        if (gameTime - lastReagenItem >= 5000) {
+            lastReagenItem = gameTime;
+
+            Item newItem = new Item(null);
+
+            if (itemNumber == Constants.ITEM_HEART) {
+                newItem = new Item_Heart();
+            }
+
+            newItem.setPosition(randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x) - newItem.getBitmapWidth() / newItem.getIFrames(),
+                    randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y) - newItem.getBitmapHeight());
+            m_itemlist.add(newItem);
+        }
+    }
+
     public void makeEnemy() {
 
-        int posX[] = {randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), AppManager.getInstance().getDeviceSize().x, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), 0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x)};
-        int posY[] = {0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), AppManager.getInstance().getDeviceSize().y, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), 0};
+        int posX[] = { randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), AppManager.getInstance().getDeviceSize().x, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), 0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x) };
+        int posY[] = { 0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), AppManager.getInstance().getDeviceSize().y, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), 0 };
 
         if (System.currentTimeMillis() - lastRegenEnemy >= frequency) {
             lastRegenEnemy = System.currentTimeMillis();
@@ -176,13 +199,21 @@ public class GameState implements IState {
 
     public void checkCollision() {
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
-            if (CollisionManager.checkCircleToCircle(m_player.m_boundBox,
-                    m_enemylist.get(i).m_boundBox)) {
+            if (CollisionManager.checkCircleToCircle(
+                    m_player.m_boundBox, m_enemylist.get(i).m_boundBox)) {
                 m_enemylist.remove(i);
                 m_player.damagePlayer();
                 if (m_player.getLife() <= 0) {
                     //System.exit(0);
                 }
+            }
+        }
+
+        for (int i = m_itemlist.size() - 1; i >= 0; i--) {
+            if (CollisionManager.checkCircleToCircle(
+                    m_player.m_boundBox, m_itemlist.get(i).m_boundBox)) {
+                m_itemlist.get(i).actionItem(this);
+                m_itemlist.remove(i);
             }
         }
     }
