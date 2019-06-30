@@ -73,8 +73,14 @@ public class Player extends SpriteAnimation {
     }
 
     public int getLife( ) { return m_life; }
-    public void addLife( ) { m_life++; }
-    public void destroyPlayer( ) { m_life--; }
+    public void addLife( ) {
+        m_life++;
+        if (m_life  > 3) { m_life = 3; }
+    }
+    public void damagePlayer( ) {
+        m_life--;
+        if (m_life < 0) { m_life = 0; }
+    }
 
     public void setSpeed(int _speed) { m_speed = _speed; }
     public float getSpeed() { return m_speed; }
