@@ -5,9 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import com.teamseven.gameframework.AppManager;
-import com.teamseven.gameframework.GameView;
 import com.teamseven.gameframework.GraphicObject;
-import com.teamseven.gameframework.SpriteAnimation;
 
 public class Enemy extends GraphicObject {
     public int state = Constants.STATE_NORMAL;
@@ -22,6 +20,7 @@ public class Enemy extends GraphicObject {
 
     public Enemy(Bitmap bitmap) {
         super(bitmap);
+
     }
 
 

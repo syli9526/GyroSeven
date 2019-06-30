@@ -25,13 +25,12 @@ public class GameState implements IState {
     private Player m_player;
     private BackGround m_background;
     private ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
+    private ArrayList<Enemy> m_enemylist_2 = new ArrayList<Enemy>();
     private Heart m_heart;
 
-    private int frequency = 2700;
-    private int frequency_2 = 5000;
+    private int frequency = 3000;
     private int level = 1;
     long lastRegenEnemy = System.currentTimeMillis();
-    long lastRegenEnemy_2 = System.currentTimeMillis();
     long lastLevelUp = System.currentTimeMillis();
 
 
@@ -59,17 +58,19 @@ public class GameState implements IState {
         m_player.update(gameTime);
         m_player.move(m_pitch, m_roll);
 
-
-        if (gameTime - lastLevelUp >= 20000) {
-            lastLevelUp = gameTime;
-            if (level < 5) {
+        if (level < 6) {
+            if (gameTime - lastLevelUp >= 20000) {
+                lastLevelUp = gameTime;
                 level++;
                 frequency -= 500;
-                frequency_2 -=500;
                 for (Enemy enemy : m_enemylist) enemy.speedUp(1f);
-            } else {
-                for (Enemy enemy : m_enemylist) enemy.speedUp(0.5f);
             }
+        } else {
+            if (gameTime - lastLevelUp >= 1000) {
+                lastLevelUp = gameTime;
+                for (Enemy enemy : m_enemylist) enemy.speedUp(0.1f);
+            }
+
         }
 
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
@@ -79,6 +80,12 @@ public class GameState implements IState {
             enemy.update();
         }
 
+        for (int i = m_enemylist_2.size() - 1; i >= 0; i--) {
+            Enemy enemy = m_enemylist_2.get(i);
+            enemy.move(m_player.getX(), m_player.getY());
+            if (enemy.state == Constants.STATE_OUT) m_enemylist_2.remove(i);
+            enemy.update();
+        }
         makeEnemy();
         checkCollision();
     }
@@ -89,10 +96,13 @@ public class GameState implements IState {
         for (Enemy enemy : m_enemylist) {
             enemy.draw(_canvas);
         }
+        for (Enemy enemy : m_enemylist_2) {
+            enemy.draw(_canvas);
+        }
         m_player.draw(_canvas);
 
         for (int i = 0; i < m_player.getLife(); i++) {
-            m_heart.setPosition(5+ m_heart.getBitmap().getWidth() * i, 5);
+            m_heart.setPosition(5 + m_heart.getBitmap().getWidth() * i, 5);
             m_heart.draw(_canvas);
         }
 
@@ -151,25 +161,27 @@ public class GameState implements IState {
         if (System.currentTimeMillis() - lastRegenEnemy >= frequency) {
             lastRegenEnemy = System.currentTimeMillis();
             Enemy crw[] = new Enemy_1[4];
+
             for (int i = 0; i < crw.length; i++) {
                 crw[i] = new Enemy_1();
                 crw[i].x_weight = randEnemy.nextInt(3 + level);
                 crw[i].y_weight = randEnemy.nextInt(3 + level);
                 crw[i].movePattern = i + randEnemy.nextInt(1);
+
                 if (posX[i] == 0) crw[i].setPosition(-crw[i].getBitmap().getWidth(), posY[i]);
                 else if (posY[i] == 0) crw[i].setPosition(posX[i], -crw[i].getBitmap().getHeight());
                 else crw[i].setPosition(posX[i], posY[i]);
+
                 m_enemylist.add(crw[i]);
             }
 
-            if (System.currentTimeMillis() - lastRegenEnemy_2 >= frequency_2) {
-                lastRegenEnemy_2 = System.currentTimeMillis();
-
+            while (m_enemylist_2.size() < level) {
                 Enemy enemy = new Enemy_2();
                 int idx = randEnemy.nextInt(3);
                 enemy.movePattern = 4;
+                enemy.speedUp(randEnemy.nextInt(4));
                 enemy.setPosition(posX[idx], posY[idx]);
-                m_enemylist.add(enemy);
+                m_enemylist_2.add(enemy);
             }
         }
 
@@ -180,6 +192,17 @@ public class GameState implements IState {
             if (CollisionManager.checkCircleToCircle(m_player.m_boundBox,
                     m_enemylist.get(i).m_boundBox)) {
                 m_enemylist.remove(i);
+                m_player.damagePlayer();
+                if (m_player.getLife() <= 0) {
+                    //System.exit(0);
+                }
+            }
+        }
+
+        for (int i = m_enemylist_2.size() - 1; i >= 0; i--) {
+            if (CollisionManager.checkCircleToCircle(m_player.m_boundBox,
+                    m_enemylist_2.get(i).m_boundBox)) {
+                m_enemylist_2.remove(i);
                 m_player.damagePlayer();
                 if (m_player.getLife() <= 0) {
                     //System.exit(0);
