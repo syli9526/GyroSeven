@@ -10,4 +10,7 @@ public class Constants {
     public static final int STATE_NORMAL = 0;
     public static final int STATE_OUT = 1;
 
+    // 아이템 번호
+    public static final int ITEM_HEART = 0, ITEM_BOMB = 1, ITEM_MISSILE = 2, ITEM_SHIELD = 3;
+
 }
