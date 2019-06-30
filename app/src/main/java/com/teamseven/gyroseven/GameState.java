@@ -1,6 +1,5 @@
 package com.teamseven.gyroseven;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,13 +25,13 @@ public class GameState implements IState {
     private Player m_player;
     private BackGround m_background;
     private ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
-    private Heart m_heart;
 
     private int frequency = 2700;
     private int level = 1;
     long lastRegenEnemy = System.currentTimeMillis();
     long lastRegenEnemy_2 = System.currentTimeMillis();
     long lastLevelUp = System.currentTimeMillis();
+
 
     Random randEnemy = new Random();
 
@@ -43,7 +42,6 @@ public class GameState implements IState {
     public void init() {
         m_player = new Player(AppManager.getInstance().getBitmap(R.drawable.player_sprite));
         m_background = new BackGround(0);
-        m_heart = new Heart();
     }
 
     @Override
@@ -87,16 +85,10 @@ public class GameState implements IState {
         }
         m_player.draw(_canvas);
 
-        for (int i = 0; i < m_player.getLife(); i++) {
-            m_heart.setPosition(5+ m_heart.getBitmap().getWidth() * i, 5);
-            m_heart.draw(_canvas);
-        }
-
         Paint p = new Paint();
         p.setTextSize(40);
         p.setColor(Color.BLACK);
         m_level = "Level :" + Integer.toString(level);
-
         _canvas.drawText(m_str1, 0, 140, p);
         _canvas.drawText(m_str2, 0, 180, p);
         _canvas.drawText(m_level, 0, 220, p);
@@ -176,7 +168,7 @@ public class GameState implements IState {
             if (CollisionManager.checkCircleToCircle(m_player.m_boundBox,
                     m_enemylist.get(i).m_boundBox)) {
                 m_enemylist.remove(i);
-                m_player.damagePlayer();
+                m_player.destroyPlayer();
                 if (m_player.getLife() <= 0) {
                     //System.exit(0);
                 }
