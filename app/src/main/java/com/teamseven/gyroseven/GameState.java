@@ -27,6 +27,7 @@ public class GameState implements IState {
     private ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
 
     private int frequency = 2700;
+    private int frequency_2 = 5000;
     private int level = 1;
     long lastRegenEnemy = System.currentTimeMillis();
     long lastRegenEnemy_2 = System.currentTimeMillis();
@@ -62,7 +63,10 @@ public class GameState implements IState {
             if (level < 5) {
                 level++;
                 frequency -= 500;
+                frequency_2 -=500;
                 for (Enemy enemy : m_enemylist) enemy.speedUp(1f);
+            } else {
+                for (Enemy enemy : m_enemylist) enemy.speedUp(0.5f);
             }
         }
 
@@ -150,7 +154,7 @@ public class GameState implements IState {
                 m_enemylist.add(crw[i]);
             }
 
-            if (System.currentTimeMillis() - lastRegenEnemy_2 >= 5000) {
+            if (System.currentTimeMillis() - lastRegenEnemy_2 >= frequency_2) {
                 lastRegenEnemy_2 = System.currentTimeMillis();
 
                 Enemy enemy = new Enemy_2();
