@@ -15,8 +15,6 @@ import android.view.SurfaceView;
 import com.teamseven.gyroseven.GameState;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
-    public static int SCREEN_WIDTH;
-    public static int SCREEN_HEIGHT;
 
     SensorManager m_sensorManager;
 
@@ -27,18 +25,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         super(context);
         setFocusable(true);
 
-        m_sensorManager = (SensorManager) context.getSystemService
-                (Context. SENSOR_SERVICE);
-        m_sensorManager.registerListener( this,
-                m_sensorManager.getDefaultSensor(Sensor. TYPE_ORIENTATION),
-                SensorManager.SENSOR_DELAY_GAME);
-
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        SCREEN_WIDTH = dm.widthPixels;
-        SCREEN_HEIGHT = dm.heightPixels;
+        m_sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        m_sensorManager.registerListener(this, m_sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
 
         AppManager.getInstance().setGameView(this);
         AppManager.getInstance().setResources(getResources());
+        AppManager.getInstance().setContext(context);
 
         getHolder().addCallback(this); // 콜백상태 지정
         m_thread = new GameViewThread(getHolder(), this);
@@ -61,11 +53,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         boolean retry = true;
         m_thread.setRunning(false);
-        while(retry) {
+        while (retry) {
             try {
                 m_thread.join();
                 retry = false;
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
         }
     }
 
@@ -104,7 +97,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void changeGameState(IState _state) {
-        if(m_state != null)
+        if (m_state != null)
             _state.destroy();
         _state.init();
         m_state = _state;

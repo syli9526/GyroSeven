@@ -1,42 +1,75 @@
 package com.teamseven.gyroseven;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 
+import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.GameView;
+import com.teamseven.gameframework.GraphicObject;
 import com.teamseven.gameframework.SpriteAnimation;
 
-public class Enemy extends SpriteAnimation {
-    public static final int STATE_NORMAL= 0;
-    public static final int STATE_OUT= 1;
-    public int state = STATE_NORMAL;
+public class Enemy extends GraphicObject {
+    public int state = Constants.STATE_NORMAL;
 
-    protected int m_hp;
-    protected float m_speed;
+    protected int movePattern;
+    protected float speed;
+    protected int x_weight;
+    protected int y_weight;
 
-    protected Rect m_boundBox = new Rect();
+    Rect m_boundBox = new Rect();
 
-    public Enemy(Bitmap _bitmap) {
-        super(_bitmap);
+    public Enemy(Bitmap bitmap) {
+        super(bitmap);
     }
 
-    void move() {
-        m_y += m_speed;
 
-        if ( m_y > GameView.SCREEN_HEIGHT) state = STATE_OUT;
+    public void move(int x, int y) {
+
+        if (getY() > AppManager.getInstance().getDeviceSize().y || getX() > AppManager.getInstance().getDeviceSize().x
+                || getY() < -getBitmap().getWidth() || getX() < -getBitmap().getHeight())
+            state = Constants.STATE_OUT;
+
+        switch (movePattern) {
+
+            case Constants.MOVE_PATTERN_1:
+                setX(getX() + (int) speed*x_weight);
+                setY(getY() + (int) speed*y_weight);
+                break;
+            case Constants.MOVE_PATTERN_2:
+                setX(getX() - (int) speed*x_weight);
+                setY(getY() + (int) speed*y_weight);
+                break;
+            case Constants.MOVE_PATTERN_3:
+                setX(getX() - (int) speed*x_weight);
+                setY(getY() - (int) speed*y_weight);
+                break;
+            case Constants.MOVE_PATTERN_4:
+                setX(getX() + (int) speed*x_weight);
+                setY(getY() - (int) speed*y_weight);
+                break;
+            case Constants.MOVE_PATTERN_5:
+                if (x < getX())
+                    setX(getX() - (int) speed);
+                else
+                    setX(getX() + (int) speed);
+                if (y < getY())
+                    setY(getY() - (int) speed);
+                else
+                    setY(getY() + (int) speed);
+                break;
+        }
+
+
+    }
+
+    public void update() {
+        m_boundBox.set(getX(), getY(), getX() + getBitmap().getWidth(), getY() + getBitmap().getHeight());
     }
 
     @Override
-    public void update(long gameTime) {
-        super.update(gameTime);
-        move();
-
-        m_boundBox.set(m_x, m_y,
-                m_x + (getBitmap().getWidth() / getIFrames()),
-                m_y + getBitmap().getHeight());
-    }
-
-    void attack() {
-
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+        canvas.drawBitmap(m_bitmap, getX(), getY(), null);
     }
 }
