@@ -5,7 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.util.DisplayMetrics;
+
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -26,7 +26,8 @@ public class AppManager {
     }
 
     public Point getDeviceSize() {
-        if(size == null){
+
+        if (size == null) { //첫실행 한번만 디바이스 사이즈를 구해오기 위함
             display = ((WindowManager) AppManager.getInstance().context.getSystemService(AppManager.getInstance().context.WINDOW_SERVICE)).getDefaultDisplay();
             size = new Point();
             display.getSize(size);

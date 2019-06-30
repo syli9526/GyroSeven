@@ -5,13 +5,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorManager;
+
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.CollisionManager;
-import com.teamseven.gameframework.GameView;
 import com.teamseven.gameframework.IState;
 
 import java.util.ArrayList;

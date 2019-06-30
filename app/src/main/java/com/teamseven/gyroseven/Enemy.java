@@ -5,9 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import com.teamseven.gameframework.AppManager;
-import com.teamseven.gameframework.GameView;
 import com.teamseven.gameframework.GraphicObject;
-import com.teamseven.gameframework.SpriteAnimation;
 
 public class Enemy extends GraphicObject {
     public int state = Constants.STATE_NORMAL;
@@ -29,6 +27,7 @@ public class Enemy extends GraphicObject {
 
         if (getY() > AppManager.getInstance().getDeviceSize().y || getX() > AppManager.getInstance().getDeviceSize().x
                 || getY() < -getBitmap().getWidth() || getX() < -getBitmap().getHeight())
+
             state = Constants.STATE_OUT;
 
         switch (movePattern) {
@@ -54,6 +53,7 @@ public class Enemy extends GraphicObject {
                 else setX(getX() + (int) speed);
                 if (y < getY()) setY(getY() - (int) speed);
                 else setY(getY() + (int) speed);
+
                 break;
         }
 

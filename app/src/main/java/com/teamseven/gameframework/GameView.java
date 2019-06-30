@@ -12,6 +12,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.teamseven.gyroseven.GameState;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
