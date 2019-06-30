@@ -24,8 +24,12 @@ public class GameState implements IState {
     private Player m_player;
     private BackGround m_background;
     private ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
+
     long lastRegenEnemy = System.currentTimeMillis();
     Random randEnemy = new Random();
+
+    private int cnt = 0;
+    private int frequency = 1000;
 
     float m_roll;
     float m_pitch;
@@ -50,9 +54,12 @@ public class GameState implements IState {
 
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
             Enemy enemy = m_enemylist.get(i);
-            enemy.update(gameTime);
-            if (enemy.state == Enemy.STATE_OUT) m_enemylist.remove(i);
+            enemy.move(m_player.getX(), m_player.getY());
+            if (enemy.state == Constants.STATE_OUT) m_enemylist.remove(i);
+            enemy.update();
         }
+
+
         makeEnemy();
         checkCollision();
     }
@@ -66,7 +73,7 @@ public class GameState implements IState {
 
         m_player.draw(_canvas);
 
-        Paint p = new Paint( );
+        Paint p = new Paint();
         p.setTextSize(40);
         p.setColor(Color.BLACK);
         _canvas.drawText(m_str1, 0, 140, p);
@@ -76,18 +83,24 @@ public class GameState implements IState {
     @Override
     public void onSensorChanged(SensorEvent event) {
         synchronized (this) {
-            switch (event.sensor.getType( )) {
+            switch (event.sensor.getType()) {
                 case Sensor.TYPE_ORIENTATION:
                     m_pitch = event.values[1];
                     m_roll = event.values[2];
-                    m_str1 = "Pitch   : " + Integer.toString((int)m_pitch);
-                    m_str2 = "Roll    : " + Integer.toString((int)m_roll);
+                    m_str1 = "Pitch   : " + Integer.toString((int) m_pitch);
+                    m_str2 = "Roll    : " + Integer.toString((int) m_roll);
 
-                    if (m_pitch > 90.0f)        { m_pitch = 90.0f; }
-                    else if (m_pitch < -90.0f)  { m_pitch = -90.0f; }
+                    if (m_pitch > 90.0f) {
+                        m_pitch = 90.0f;
+                    } else if (m_pitch < -90.0f) {
+                        m_pitch = -90.0f;
+                    }
 
-                    if (m_roll > 90.0f)         { m_roll = 90.0f; }
-                    else if (m_roll < -90.0f)   { m_roll = -90.0f; }
+                    if (m_roll > 90.0f) {
+                        m_roll = 90.0f;
+                    } else if (m_roll < -90.0f) {
+                        m_roll = -90.0f;
+                    }
             }
         }
     }
@@ -105,24 +118,47 @@ public class GameState implements IState {
     }
 
     public void makeEnemy() {
-        if (System.currentTimeMillis() - lastRegenEnemy >= 1000) {
+        int posX[] = {randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), AppManager.getInstance().getDeviceSize().x, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), 0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x)};
+        int posY[] = {0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), AppManager.getInstance().getDeviceSize().y, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), 0};
+
+        if (System.currentTimeMillis() - lastRegenEnemy >= frequency) {
             lastRegenEnemy = System.currentTimeMillis();
 
-            Enemy enemy = new Enemy_1();
+            cnt++;
+            Enemy crw[] = new Enemy_1[4];
+            for (int i = 0; i < crw.length; i++) {
+                crw[i] = new Enemy_1();
 
-            enemy.setPosition(randEnemy.nextInt(
-                    GameView.SCREEN_WIDTH - enemy.getBitmap().getWidth() / enemy.getIFrames() / 2),
-                    -180);
+                crw[i].x_weight = randEnemy.nextInt(3);
+                crw[i].y_weight = randEnemy.nextInt(3);
+                crw[i].movePattern = i + randEnemy.nextInt(1);
+                if (cnt % 5 == 0){
+                    frequency --;
+                    crw[i].speed = crw[i].speed +1f;
+                }
 
-            m_enemylist.add(enemy);
+                if (posX[i] == 0) crw[i].setPosition(-crw[i].getBitmap().getWidth(), posY[i]);
+                else if (posY[i] == 0) crw[i].setPosition(posX[i], -crw[i].getBitmap().getHeight());
+                else crw[i].setPosition(posX[i], posY[i]);
+                m_enemylist.add(crw[i]);
+            }
+
+            if (cnt % 5 == 0) {
+                Enemy enemy = new Enemy_2();
+                int idx = randEnemy.nextInt(3);
+                enemy.movePattern = 4;
+                enemy.setPosition(posX[idx], posY[idx]);
+                m_enemylist.add(enemy);
+            }
         }
+
     }
 
     public void checkCollision() {
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
             if (CollisionManager.checkCircleToCircle(m_player.m_boundBox,
                     m_enemylist.get(i).m_boundBox)) {
-                m_enemylist.remove( i);
+                m_enemylist.remove(i);
                 m_player.destroyPlayer();
                 if (m_player.getLife() <= 0) {
                     //System.exit(0);

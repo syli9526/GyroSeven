@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.GameView;
 import com.teamseven.gameframework.SpriteAnimation;
 
@@ -17,9 +18,8 @@ public class Player extends SpriteAnimation {
     public Player(Bitmap _bitmap) {
         super(_bitmap);
 
-        this.initSpriteData(300, 300,5,4);
-        this.setPosition(GameView.SCREEN_WIDTH / 2 - (m_bitmap.getWidth() / m_iFrames / 2),
-                (int)(GameView.SCREEN_HEIGHT * 0.6));
+        super.initSpriteData(getBitmapWidth() / 6, getBitmapHeight(),5 , 4);
+        super.setPosition(AppManager.getInstance().getDeviceSize().x / 2, AppManager.getInstance().getDeviceSize().y/2);
 
         m_life = 3;
         m_speed = 10.0f;
@@ -52,8 +52,8 @@ public class Player extends SpriteAnimation {
         if (m_x < 0) {
             m_x = 0;
         }
-        else if (m_x > GameView.SCREEN_WIDTH - getBitmap().getWidth() / getIFrames()) {
-            m_x = GameView.SCREEN_WIDTH - getBitmap().getWidth() / getIFrames();
+        else if (m_x > AppManager.getInstance().getDeviceSize().x - getBitmap().getWidth() / getIFrames()) {
+            m_x = AppManager.getInstance().getDeviceSize().x  - getBitmap().getWidth() / getIFrames();
         }
 
         m_y += roll / 10.0f * m_speed;
@@ -61,8 +61,8 @@ public class Player extends SpriteAnimation {
         if (m_y < 0) {
             m_y = 0;
         }
-        else if (m_y > GameView.SCREEN_HEIGHT - getBitmap().getHeight()) {
-            m_y = GameView.SCREEN_HEIGHT - getBitmap().getHeight();
+        else if (m_y > AppManager.getInstance().getDeviceSize().y - getBitmap().getHeight()) {
+            m_y =  AppManager.getInstance().getDeviceSize().y - getBitmap().getHeight();
         }
 
         // 스마트폰을 기울이는 방향에 따라 player 방향 전환

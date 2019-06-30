@@ -26,4 +26,6 @@ public class GraphicObject {
     public void setBitmap(Bitmap _bitmap) { m_bitmap = _bitmap; }
     public int getX() { return m_x; }
     public int getY() { return m_y; }
+    public void setX(int x){this.m_x=x;}
+    public void setY(int y){this.m_y=y;}
 }

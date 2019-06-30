@@ -49,6 +49,11 @@ public class SpriteAnimation extends GraphicObject {
         //_canvas.drawBitmap(rotate, m_x, m_y, null);
     }
 
+
+    public int getBitmapWidth() { return (int)m_bitmap.getWidth();}
+    public int getBitmapHeight(){return (int)m_bitmap.getHeight();}
+
+
     public void update(long gameTime) {
         if (gameTime > m_frameTimer + m_fps) {
             m_frameTimer = gameTime;
