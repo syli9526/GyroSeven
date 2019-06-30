@@ -18,7 +18,7 @@ public class Player extends SpriteAnimation {
     public Player(Bitmap _bitmap) {
         super(_bitmap);
 
-        super.initSpriteData(getBitmapWidth() / 6, getBitmapHeight(),5 , 4);
+        super.initSpriteData(getBitmapWidth() / 6, getBitmapHeight(),8 , 4);
         super.setPosition(AppManager.getInstance().getDeviceSize().x / 2, AppManager.getInstance().getDeviceSize().y/2);
 
         m_life = 3;

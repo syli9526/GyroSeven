@@ -13,6 +13,7 @@ public class Enemy extends GraphicObject {
     public int state = Constants.STATE_NORMAL;
 
     protected int movePattern;
+
     protected float speed;
     protected int x_weight;
     protected int y_weight;
@@ -49,14 +50,10 @@ public class Enemy extends GraphicObject {
                 setY(getY() - (int) speed*y_weight);
                 break;
             case Constants.MOVE_PATTERN_5:
-                if (x < getX())
-                    setX(getX() - (int) speed);
-                else
-                    setX(getX() + (int) speed);
-                if (y < getY())
-                    setY(getY() - (int) speed);
-                else
-                    setY(getY() + (int) speed);
+                if (x < getX()) setX(getX() - (int) speed);
+                else setX(getX() + (int) speed);
+                if (y < getY()) setY(getY() - (int) speed);
+                else setY(getY() + (int) speed);
                 break;
         }
 
@@ -65,6 +62,10 @@ public class Enemy extends GraphicObject {
 
     public void update() {
         m_boundBox.set(getX(), getY(), getX() + getBitmap().getWidth(), getY() + getBitmap().getHeight());
+    }
+
+    public void speedUp(float plus){
+        this.speed  += plus;
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import com.teamseven.gameframework.AppManager;
-import com.teamseven.gameframework.GameView;
 import com.teamseven.gameframework.GraphicObject;
 
 public class BackGround extends GraphicObject {

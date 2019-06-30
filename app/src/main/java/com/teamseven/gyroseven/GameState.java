@@ -20,16 +20,20 @@ import java.util.Random;
 public class GameState implements IState {
     String m_str1 = "";
     String m_str2 = "";
+    String m_level = "";
 
     private Player m_player;
     private BackGround m_background;
     private ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
 
+    private int frequency = 2700;
+    private int level = 1;
     long lastRegenEnemy = System.currentTimeMillis();
-    Random randEnemy = new Random();
+    long lastRegenEnemy_2 = System.currentTimeMillis();
+    long lastLevelUp = System.currentTimeMillis();
 
-    private int cnt = 0;
-    private int frequency = 1000;
+
+    Random randEnemy = new Random();
 
     float m_roll;
     float m_pitch;
@@ -48,9 +52,19 @@ public class GameState implements IState {
     @Override
     public void update() {
         long gameTime = System.currentTimeMillis();
+
         m_player.update(gameTime);
         m_player.move(m_pitch, m_roll);
-        //m_background.update(gameTime);
+
+
+        if (gameTime - lastLevelUp >= 20000) {
+            lastLevelUp = gameTime;
+            if (level < 5) {
+                level++;
+                frequency -= 500;
+                for (Enemy enemy : m_enemylist) enemy.speedUp(1f);
+            }
+        }
 
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
             Enemy enemy = m_enemylist.get(i);
@@ -58,7 +72,6 @@ public class GameState implements IState {
             if (enemy.state == Constants.STATE_OUT) m_enemylist.remove(i);
             enemy.update();
         }
-
 
         makeEnemy();
         checkCollision();
@@ -70,14 +83,15 @@ public class GameState implements IState {
         for (Enemy enemy : m_enemylist) {
             enemy.draw(_canvas);
         }
-
         m_player.draw(_canvas);
 
         Paint p = new Paint();
         p.setTextSize(40);
         p.setColor(Color.BLACK);
+        m_level = "Level :" + Integer.toString(level);
         _canvas.drawText(m_str1, 0, 140, p);
         _canvas.drawText(m_str2, 0, 180, p);
+        _canvas.drawText(m_level, 0, 220, p);
     }
 
     @Override
@@ -118,32 +132,27 @@ public class GameState implements IState {
     }
 
     public void makeEnemy() {
+
         int posX[] = {randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), AppManager.getInstance().getDeviceSize().x, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), 0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x)};
         int posY[] = {0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), AppManager.getInstance().getDeviceSize().y, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), 0};
 
         if (System.currentTimeMillis() - lastRegenEnemy >= frequency) {
             lastRegenEnemy = System.currentTimeMillis();
-
-            cnt++;
             Enemy crw[] = new Enemy_1[4];
             for (int i = 0; i < crw.length; i++) {
                 crw[i] = new Enemy_1();
-
-                crw[i].x_weight = randEnemy.nextInt(3);
-                crw[i].y_weight = randEnemy.nextInt(3);
+                crw[i].x_weight = randEnemy.nextInt(3 + level);
+                crw[i].y_weight = randEnemy.nextInt(3 + level);
                 crw[i].movePattern = i + randEnemy.nextInt(1);
-                if (cnt % 5 == 0){
-                    frequency --;
-                    crw[i].speed = crw[i].speed +1f;
-                }
-
                 if (posX[i] == 0) crw[i].setPosition(-crw[i].getBitmap().getWidth(), posY[i]);
                 else if (posY[i] == 0) crw[i].setPosition(posX[i], -crw[i].getBitmap().getHeight());
                 else crw[i].setPosition(posX[i], posY[i]);
                 m_enemylist.add(crw[i]);
             }
 
-            if (cnt % 5 == 0) {
+            if (System.currentTimeMillis() - lastRegenEnemy_2 >= 5000) {
+                lastRegenEnemy_2 = System.currentTimeMillis();
+
                 Enemy enemy = new Enemy_2();
                 int idx = randEnemy.nextInt(3);
                 enemy.movePattern = 4;
