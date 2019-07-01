@@ -69,7 +69,7 @@ public class Player extends SpriteAnimation {
         double dx = -pitch;
         double dy = -roll;
         float degrees = (float) Math.toDegrees(Math.atan2(dx, dy));
-        m_matrix.setRotate(degrees);
+        m_matrix.setRotate(degrees, getBitmapWidth() / 2, getBitmapHeight() / 2);
     }
 
     public int getLife() {

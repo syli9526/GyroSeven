@@ -13,7 +13,7 @@ public class Constants {
     public static final int[] BACKGROUND = {R.drawable.intro, R.drawable.background1, R.drawable.background2, R.drawable.background3};
 
     // 아이템 번호
-    public static final int ITEM_HEART = 0, ITEM_MISSILE = 1, ITEM_BOMB = 2, ITEM_SHIELD = 3;
+    public static final int ITEM_HEART = 0, ITEM_MISSILE = 1, ITEM_SHIELD = 2, ITEM_BOMB = 3;
 
     // 아이템 상태
     public static final int STATE_ITEM_MADE = 0, STATE_ITEM_ACTIONED = 1, STATE_ITEM_FINISHED = 2;

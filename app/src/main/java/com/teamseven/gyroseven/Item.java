@@ -15,7 +15,7 @@ public class Item extends SpriteAnimation {
         super(_bitmap);
     }
 
-    public void update(long gameTime) {
+    public void update(long gameTime, GameState _game) {
         super.update(gameTime);
 
         m_boundBox.set(m_x, m_y,
