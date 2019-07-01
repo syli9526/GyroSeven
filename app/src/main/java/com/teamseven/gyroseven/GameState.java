@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -17,31 +16,30 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GameState implements IState {
-    String m_level = "";
 
     protected Player m_player;
     protected BackGround m_background;
     protected ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
-    protected ArrayList<Enemy> m_enemylist_2 = new ArrayList<Enemy>();
     protected ArrayList<Item> m_itemlist = new ArrayList<Item>();
     protected Heart m_heart = new Heart();
 
-    protected int frequency = 3000;
-    protected int level = 1;
-    protected long lastRegenEnemy = System.currentTimeMillis();
-    protected long lastLevelUp = System.currentTimeMillis();
-    protected long lastReagenItem = System.currentTimeMillis();
+    private int frequency = 3000;
+    private int level = 1;
+    private int cntEnemy2 = 0;
+    private long lastRegenEnemy = System.currentTimeMillis();
+    private long lastLevelUp = System.currentTimeMillis();
+    private long lastReagenItem = System.currentTimeMillis();
 
-    protected Random randItem = new Random();
-    protected Random randEnemy = new Random();
+    private Random randItem = new Random();
+    private Random randEnemy = new Random();
 
-    protected float m_roll;
-    protected float m_pitch;
+    private float m_roll;
+    private float m_pitch;
 
     @Override
     public void init() {
         m_player = new Player(AppManager.getInstance().getBitmap(R.drawable.player_sprite));
-        m_background = new BackGround(0);
+        m_background = new BackGround(level);
         m_heart = new Heart();
     }
 
@@ -53,7 +51,8 @@ public class GameState implements IState {
     @Override
     public void update() {
         long gameTime = System.currentTimeMillis();
-
+        int cnt = 0;
+        m_background.changeBackGround(level);
         m_player.update(gameTime);
         m_player.move(m_pitch, m_roll);
 
@@ -66,24 +65,21 @@ public class GameState implements IState {
             }
         } else {
             if (gameTime - lastLevelUp >= 1000) {
-                    lastLevelUp = gameTime;
-                    for (Enemy enemy : m_enemylist) enemy.speedUp(0.1f);
+                lastLevelUp = gameTime;
+                for (Enemy enemy : m_enemylist) enemy.speedUp(0.1f);
             }
         }
 
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
             Enemy enemy = m_enemylist.get(i);
             enemy.move(m_player.getCenterX(), m_player.getCenterY());
+            if (enemy.type == 2 && enemy.state != Constants.STATE_OUT) cnt++;
             if (enemy.state == Constants.STATE_OUT) m_enemylist.remove(i);
+
             enemy.update();
         }
 
-        for (int i = m_enemylist_2.size() - 1; i >= 0; i--) {
-            Enemy enemy = m_enemylist_2.get(i);
-            enemy.move(m_player.getX(), m_player.getY());
-            if (enemy.state == Constants.STATE_OUT) m_enemylist_2.remove(i);
-            enemy.update();
-        }
+        cntEnemy2 = cnt;
 
         for (int i = m_itemlist.size() - 1; i >= 0; i--) {
             Item item = m_itemlist.get(i);
@@ -98,17 +94,9 @@ public class GameState implements IState {
     @Override
     public void render(Canvas _canvas) {
         m_background.draw(_canvas);
-        for (Enemy enemy : m_enemylist) {
-            enemy.draw(_canvas);
-        }
-        for (Enemy enemy : m_enemylist_2) {
-            enemy.draw(_canvas);
-        }
+        for (Enemy enemy : m_enemylist) { enemy.draw(_canvas); }
+        for (Item item : m_itemlist) { item.draw(_canvas); }
         m_player.draw(_canvas);
-
-        for (Item item : m_itemlist) {
-            item.draw(_canvas);
-        }
 
         for (int i = 0; i < m_player.getLife(); i++) {
             m_heart.setPosition(5 + m_heart.getBitmap().getWidth() * i, 5);
@@ -118,7 +106,7 @@ public class GameState implements IState {
         Paint p = new Paint();
         p.setTextSize(40);
         p.setColor(Color.WHITE);
-        m_level = "Level : " + Integer.toString(level);
+        String m_level = "Level : " + Integer.toString(level);
         _canvas.drawText(m_level, 0, 220, p);
     }
 
@@ -177,8 +165,8 @@ public class GameState implements IState {
 
     public void makeEnemy() {
 
-        int posX[] = { randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), AppManager.getInstance().getDeviceSize().x, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), 0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x) };
-        int posY[] = { 0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), AppManager.getInstance().getDeviceSize().y, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), 0 };
+        int posX[] = {randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), AppManager.getInstance().getDeviceSize().x, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), 0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x)};
+        int posY[] = {0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), AppManager.getInstance().getDeviceSize().y, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), 0};
 
         if (System.currentTimeMillis() - lastRegenEnemy >= frequency) {
             lastRegenEnemy = System.currentTimeMillis();
@@ -197,13 +185,14 @@ public class GameState implements IState {
                 m_enemylist.add(crw[i]);
             }
 
-            while (m_enemylist_2.size() < level) {
+            while (cntEnemy2 < level) {
                 Enemy enemy = new Enemy_2();
                 int idx = randEnemy.nextInt(4);
                 enemy.movePattern = 4;
                 enemy.speedUp(randEnemy.nextInt(4));
                 enemy.setPosition(posX[idx], posY[idx]);
-                m_enemylist_2.add(enemy);
+                m_enemylist.add(enemy);
+                cntEnemy2++;
             }
         }
 
@@ -221,16 +210,6 @@ public class GameState implements IState {
             }
         }
 
-        for (int i = m_enemylist_2.size() - 1; i >= 0; i--) {
-            if (CollisionManager.checkCircleToCircle(m_player.m_boundBox,
-                    m_enemylist_2.get(i).m_boundBox)) {
-                m_enemylist_2.remove(i);
-                m_player.damagePlayer();
-                if (m_player.getLife() <= 0) {
-                    //System.exit(0);
-                }
-            }
-        }
 
         for (int i = m_itemlist.size() - 1; i >= 0; i--) {
             if (CollisionManager.checkCircleToCircle(

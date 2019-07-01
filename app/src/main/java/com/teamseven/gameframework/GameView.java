@@ -6,20 +6,15 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
 
     SensorManager m_sensorManager;
-
     private IState m_state;
     private GameViewThread m_thread;
 
@@ -74,7 +69,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         m_state.onTouchEvent(event);
-
         return super.onTouchEvent(event);
     }
 

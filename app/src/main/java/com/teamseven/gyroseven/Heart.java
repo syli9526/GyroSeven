@@ -1,7 +1,5 @@
 package com.teamseven.gyroseven;
 
-import android.graphics.Bitmap;
-
 import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.GraphicObject;
 

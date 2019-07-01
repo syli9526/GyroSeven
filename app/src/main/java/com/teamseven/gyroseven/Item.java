@@ -18,5 +18,6 @@ public class Item extends SpriteAnimation {
         m_boundBox.set(getX(), getY(), getX() + getBitmap().getWidth() / getIFrames(), getY() + getBitmap().getHeight());
     }
 
-    public void actionItem(GameState _game) { }
+    public void actionItem(GameState _game) {
+    }
 }

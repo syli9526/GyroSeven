@@ -1,7 +1,6 @@
 package com.teamseven.gameframework;
 
 import android.graphics.Rect;
-import android.util.Log;
 
 public class CollisionManager {
 
