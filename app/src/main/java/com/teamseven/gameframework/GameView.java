@@ -14,7 +14,7 @@ import android.view.SurfaceView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.teamseven.gyroseven.GameState;
+
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
 
@@ -36,7 +36,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         getHolder().addCallback(this); // 콜백상태 지정
         m_thread = new GameViewThread(getHolder(), this);
 
-        changeGameState(new GameState());
     }
 
     @Override
