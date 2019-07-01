@@ -2,12 +2,14 @@ package com.teamseven.gameframework;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 public class GraphicObject {
 
     protected Bitmap m_bitmap;
     protected int m_x;
     protected int m_y;
+
 
     public GraphicObject(Bitmap bitmap) {
         m_bitmap = bitmap;

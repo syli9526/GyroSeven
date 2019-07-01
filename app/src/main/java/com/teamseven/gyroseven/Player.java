@@ -8,27 +8,28 @@ import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.SpriteAnimation;
 
 public class Player extends SpriteAnimation {
-    Rect m_boundBox = new Rect();
     private int m_life;
     private float m_speed;
     private int m_centerX;
     private int m_centerY;
 
+    protected Rect m_boundBox = new Rect();
+
     public Player(Bitmap _bitmap) {
         super(_bitmap);
-        super.initSpriteData(getBitmapWidth() / 6, getBitmapHeight(), 8, 4);
+        super.initSpriteData(getBitmap().getWidth() / 4, getBitmap().getHeight(), 8, 4);
         super.setPosition(AppManager.getInstance().getDeviceSize().x / 2, AppManager.getInstance().getDeviceSize().y / 2);
 
         m_life = 3;
-        m_speed = 10.0f;
+        m_speed = 8.0f;
     }
 
     @Override
     public void draw(Canvas _canvas) {
         // m_currentFrame 에 따라 현재 프레임에 해당하는 영역을 잘라내고, m_matrix 값에 따라 이미지를 회전시킨다.
         Bitmap rotate = Bitmap.createBitmap(getBitmap(),
-                m_currentFrame * (getBitmap().getWidth() / getIFrames()), 0,
-                getBitmap().getWidth() / getIFrames(), getBitmap().getHeight(), m_matrix, true);
+                m_currentFrame * getBitmapWidth(), 0,
+        getBitmapWidth(), getBitmapHeight(), m_matrix, true);
 
         _canvas.drawBitmap(rotate, m_x, m_y, null);
     }
@@ -38,8 +39,8 @@ public class Player extends SpriteAnimation {
         super.update(gameTime);
 
         m_boundBox.set(m_x, m_y,
-                m_x + getBitmap().getWidth() / m_iFrames,
-                m_y + getBitmap().getHeight());
+                m_x + getBitmapWidth(),
+                m_y + getBitmapHeight());
         m_centerX = (getX() + getBitmapWidth()) / 2;
         m_centerY = (getY() + getBitmapHeight()) / 2;
     }
@@ -51,8 +52,8 @@ public class Player extends SpriteAnimation {
 
         if (m_x < 0) {
             m_x = 0;
-        } else if (m_x > AppManager.getInstance().getDeviceSize().x - getBitmap().getWidth() / getIFrames()) {
-            m_x = AppManager.getInstance().getDeviceSize().x - getBitmap().getWidth() / getIFrames();
+        } else if (m_x > AppManager.getInstance().getDeviceSize().x - getBitmapWidth()) {
+            m_x = AppManager.getInstance().getDeviceSize().x - getBitmapWidth();
         }
 
         m_y += roll / 10.0f * m_speed;

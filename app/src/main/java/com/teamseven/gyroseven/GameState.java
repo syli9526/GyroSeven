@@ -136,6 +136,7 @@ public class GameState implements IState {
                         m_pitch = -90.0f;
                     }
 
+                    m_roll -= 18.0f; // 센서 기준을 약간 기울이게 조정
                     if (m_roll > 90.0f) {
                         m_roll = 90.0f;
                     } else if (m_roll < -90.0f) {
@@ -169,8 +170,8 @@ public class GameState implements IState {
                 newItem = new Item_Heart();
             }
 
-            newItem.setPosition(randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x) - newItem.getBitmapWidth() / newItem.getIFrames(),
-                    randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y) - newItem.getBitmapHeight());
+            newItem.setPosition(randEnemy.nextInt((AppManager.getInstance().getDeviceSize().x) - newItem.getBitmapWidth()),
+                    randEnemy.nextInt((AppManager.getInstance().getDeviceSize().y) - newItem.getBitmapHeight()));
             m_itemlist.add(newItem);
         }
     }
