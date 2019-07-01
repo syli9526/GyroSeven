@@ -41,8 +41,9 @@ public class Player extends SpriteAnimation {
         m_boundBox.set(m_x, m_y,
                 m_x + getBitmapWidth(),
                 m_y + getBitmapHeight());
-        m_centerX = (getX() + getBitmapWidth()) / 2;
-        m_centerY = (getY() + getBitmapHeight()) / 2;
+
+        m_centerX = (getX() + m_boundBox.right) / 2;
+        m_centerY = (getY() + m_boundBox.bottom) / 2;
     }
 
     public void move(float pitch, float roll) {

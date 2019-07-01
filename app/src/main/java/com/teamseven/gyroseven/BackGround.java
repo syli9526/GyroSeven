@@ -1,30 +1,62 @@
 package com.teamseven.gyroseven;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import com.teamseven.gameframework.AppManager;
-import com.teamseven.gameframework.GraphicObject;
+import com.teamseven.gameframework.SpriteAnimation;
 
-public class BackGround extends GraphicObject {
-    //static final float SCROLL_SPEED = 2.0f;
-    //private float m_scroll = -2000 + 480;
+public class BackGround extends SpriteAnimation {
+
+    Bitmap bitmap[] = new Bitmap[4];
+    Rect m_BoundBox = new Rect();
 
     public BackGround(int backType) {
         super(null);
+        super.setPosition(0, 0);
 
-        m_bitmap = AppManager.getInstance().getBitmap(R.drawable.background1);
-        m_bitmap = Bitmap.createScaledBitmap(m_bitmap, AppManager.getInstance().getDeviceSize().x, AppManager.getInstance().getDeviceSize().y, true);
+        for (int i = 0; i < 4; i++) {
+            bitmap[i] = AppManager.getInstance().getBitmap(Constants.BACKGROUND[i]);
+            if (i == 0) bitmap[i] = Bitmap.createScaledBitmap(bitmap[i], AppManager.getInstance().getDeviceSize().x * 2, AppManager.getInstance().getDeviceSize().y, true);
+            else bitmap[i] = Bitmap.createScaledBitmap(bitmap[i], AppManager.getInstance().getDeviceSize().x, AppManager.getInstance().getDeviceSize().y, true);
+        }
+        switch (backType) {
+            case 0:
+                super.m_bitmap = bitmap[0];
+                super.initSpriteData(m_bitmap.getWidth()/2, m_bitmap.getHeight(), 10, 2);
+                break;
+            case 1:
+                super.m_bitmap = bitmap[1];
+                super.initSpriteData( m_bitmap.getWidth(),  m_bitmap.getHeight(), 1, 1);
+                break;
+        }
     }
 
-    void update(long gameTime) {
-        //m_scroll = m_scroll + SCROLL_SPEED;
-        //if (m_scroll >= 0) m_scroll = -2000 + 480;
-        //setPosition(0, (int)m_scroll);
+    public void changeBackGround(int back){
+
+        switch (back){
+            case 1:
+            case 2:
+                super.m_bitmap = bitmap[1];
+                super.initSpriteData(getBitmapWidth(), getBitmapHeight(), 1, 1);
+                break;
+            case 3:
+            case 4:
+                super.m_bitmap = bitmap[2];
+                super.initSpriteData(getBitmapWidth(), getBitmapHeight(), 1, 1);
+                break;
+            case 5:
+            case 6:
+                super.m_bitmap = bitmap[3];
+                super.initSpriteData(getBitmapWidth(), getBitmapHeight(), 1, 1);
+                break;
+        }
     }
 
     @Override
-    public void draw(Canvas _canvas) {
-        _canvas.drawBitmap(m_bitmap, m_x, m_y, null);
+    public void update(long gameTime) {
+        super.update(gameTime);
+        m_BoundBox.set(getX(), getY(), getX() + getBitmapWidth() , getY() + getBitmapHeight());
     }
+
 }

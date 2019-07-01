@@ -23,5 +23,6 @@ public class Item extends SpriteAnimation {
                 m_y + getBitmapHeight());
     }
 
-    public void actionItem(GameState _game) { }
+    public void actionItem(GameState _game) {
+    }
 }

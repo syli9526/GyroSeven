@@ -1,14 +1,10 @@
 package com.teamseven.gameframework;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-
 import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.WindowManager;
 
 public class AppManager {
 

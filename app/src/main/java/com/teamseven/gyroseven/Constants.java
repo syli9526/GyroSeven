@@ -10,6 +10,8 @@ public class Constants {
     public static final int STATE_NORMAL = 0;
     public static final int STATE_OUT = 1;
 
+    public static final int[] BACKGROUND = {R.drawable.intro, R.drawable.background1, R.drawable.background2, R.drawable.background3};
+
     // 아이템 번호
     public static final int ITEM_HEART = 0, ITEM_MISSILE = 1, ITEM_BOMB = 2, ITEM_SHIELD = 3;
 

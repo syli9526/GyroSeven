@@ -29,9 +29,9 @@ public class GameViewThread extends Thread {
                     m_gameView.onDraw(_canvas);
                 }
             } finally {
-                    if (_canvas != null) {
-                        m_surfaceHolder.unlockCanvasAndPost(_canvas);
-                    }
+                if (_canvas != null) {
+                    m_surfaceHolder.unlockCanvasAndPost(_canvas);
+                }
             }
         }
         //super.run();

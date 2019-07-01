@@ -1,7 +1,6 @@
 package com.teamseven.gyroseven;
 
 import com.teamseven.gameframework.AppManager;
-import com.teamseven.gameframework.GameView;
 
 public class Item_Heart extends Item {
     public Item_Heart() {
