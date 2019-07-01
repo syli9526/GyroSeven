@@ -22,7 +22,7 @@ public class Missile extends GraphicObject {
                 m_x + getBitmap().getWidth() + getBitmap().getWidth(),
                 m_y + getBitmap().getHeight() + getBitmap().getHeight());
 
-        m_speed = 20.0f;
+        m_speed = 30.0f;
         m_out = false;
     }
 
@@ -42,9 +42,9 @@ public class Missile extends GraphicObject {
             return;
         }
 
-        m_boundBox.set(m_x - getBitmap().getWidth()/2, m_y - getBitmap().getWidth()/2,
-                m_x + getBitmap().getWidth() + getBitmap().getWidth(),
-                m_y + getBitmap().getHeight() + getBitmap().getHeight());
+        m_boundBox.set(m_x - getBitmap().getWidth()/3, m_y - getBitmap().getWidth()/3,
+                m_x + getBitmap().getWidth() + getBitmap().getWidth()/3,
+                m_y + getBitmap().getHeight() + getBitmap().getHeight()/3);
 
         if (moveState == Constants.MOVE_PATTERN_1) {
             m_y -= m_speed;
