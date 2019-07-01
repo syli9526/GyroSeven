@@ -73,7 +73,7 @@ public class GameState implements IState {
 
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
             Enemy enemy = m_enemylist.get(i);
-            enemy.move(m_player.getX(), m_player.getY());
+            enemy.move(m_player.getCenterX(), m_player.getCenterY());
             if (enemy.state == Constants.STATE_OUT) m_enemylist.remove(i);
             enemy.update();
         }

@@ -3,7 +3,6 @@ package com.teamseven.gyroseven;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
-import com.teamseven.gameframework.GameView;
 import com.teamseven.gameframework.SpriteAnimation;
 
 public class Item extends SpriteAnimation {
