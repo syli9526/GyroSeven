@@ -20,6 +20,7 @@ public class Enemy extends GraphicObject {
 
     public Enemy(Bitmap bitmap) {
         super(bitmap);
+
     }
 
 
