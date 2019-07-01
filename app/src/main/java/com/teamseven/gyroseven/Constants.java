@@ -11,6 +11,10 @@ public class Constants {
     public static final int STATE_OUT = 1;
 
     // 아이템 번호
-    public static final int ITEM_HEART = 0, ITEM_BOMB = 1, ITEM_MISSILE = 2, ITEM_SHIELD = 3;
+    public static final int ITEM_HEART = 0, ITEM_MISSILE = 1, ITEM_BOMB = 2, ITEM_SHIELD = 3;
+
+    // 아이템 상태
+    public static final int STATE_ITEM_MADE = 0, STATE_ITEM_ACTIONED = 1, STATE_ITEM_FINISHED = 2;
+
 
 }

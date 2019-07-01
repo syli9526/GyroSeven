@@ -15,7 +15,7 @@ public class CollisionManager {
 
     public static boolean checkCircleToCircle(Rect _rt1, Rect _rt2) {
         double dis1, dis2;
-        double radius1 = (_rt1.right - _rt1.left) / 5 * 2;
+        double radius1 = (_rt1.right - _rt1.left) / 2;
         double radius2 = (_rt2.right - _rt2.left) / 2;
 
         dis1 = Math.sqrt((_rt1.centerX() - _rt2.centerX()) * (_rt1.centerX() - _rt2.centerX()) + (_rt1.centerY() - _rt2.centerY()) * (_rt1.centerY() - _rt2.centerY()));

@@ -7,7 +7,9 @@ import android.view.WindowManager;
 import com.teamseven.gameframework.GameView;
 
 public class MainActivity extends AppCompatActivity {
+
     private GameView gameView ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

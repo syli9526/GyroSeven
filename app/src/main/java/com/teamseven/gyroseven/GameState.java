@@ -65,7 +65,7 @@ public class GameState implements IState {
                 for (Enemy enemy : m_enemylist) enemy.speedUp(1f);
             }
         } else {
-            if (gameTime - lastLevelUp >= 1000) {
+            if (gameTime - lastLevelUp >= 3000) {
                     lastLevelUp = gameTime;
                     for (Enemy enemy : m_enemylist) enemy.speedUp(0.1f);
             }
@@ -87,7 +87,12 @@ public class GameState implements IState {
 
         for (int i = m_itemlist.size() - 1; i >= 0; i--) {
             Item item = m_itemlist.get(i);
-            item.update(gameTime);
+            if (item.itemState != Constants.STATE_ITEM_FINISHED) {
+                item.update(gameTime);
+            }
+            else {
+                m_itemlist.remove(i);
+            }
         }
 
         makeEnemy();
@@ -159,7 +164,7 @@ public class GameState implements IState {
     }
 
     public void makeItem(long gameTime) {
-        int itemNumber = randItem.nextInt(1);
+        int itemNumber = randItem.nextInt(2);
 
         if (gameTime - lastReagenItem >= 5000) {
             lastReagenItem = gameTime;
@@ -168,6 +173,9 @@ public class GameState implements IState {
 
             if (itemNumber == Constants.ITEM_HEART) {
                 newItem = new Item_Heart();
+            }
+            else if (itemNumber == Constants.ITEM_MISSILE) {
+                newItem = new Item_Missile();
             }
 
             newItem.setPosition(randEnemy.nextInt((AppManager.getInstance().getDeviceSize().x) - newItem.getBitmapWidth()),
@@ -233,11 +241,30 @@ public class GameState implements IState {
             }
         }
 
+
         for (int i = m_itemlist.size() - 1; i >= 0; i--) {
-            if (CollisionManager.checkCircleToCircle(
-                    m_player.m_boundBox, m_itemlist.get(i).m_boundBox)) {
-                m_itemlist.get(i).actionItem(this);
-                m_itemlist.remove(i);
+            if (m_itemlist.get(i).itemState == Constants.STATE_ITEM_MADE) {
+                if (CollisionManager.checkCircleToCircle(
+                        m_player.m_boundBox, m_itemlist.get(i).m_boundBox)) {
+                    m_itemlist.get(i).actionItem(this);
+                }
+            }
+        }
+
+
+        for (int i = m_enemylist.size() - 1; i >= 0; i--) {
+            for (int j = m_itemlist.size() - 1; j >= 0; j--) {
+                if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_MISSILE &&
+                        m_itemlist.get(j).itemState == Constants.STATE_ITEM_ACTIONED) {
+                    Item_Missile ms = (Item_Missile) m_itemlist.get(j);
+                    for (int k = 0; k < 8; k++) {
+                        if (CollisionManager.checkBoxToBox(
+                                ms.missile[k].m_boundBox, m_enemylist.get(i).m_boundBox)) {
+                            m_enemylist.remove(i);
+                            return;
+                        }
+                    }
+                }
             }
         }
     }
