@@ -7,6 +7,7 @@ public class Enemy_2 extends Enemy {
         super(AppManager.getInstance().getBitmap(R.drawable.enemy_2));
         speed = 2f;
         type = 2;
+        grade = 20;
 
     }
 

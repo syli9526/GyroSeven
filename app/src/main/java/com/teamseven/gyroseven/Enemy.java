@@ -12,6 +12,7 @@ public class Enemy extends GraphicObject {
 
     protected int movePattern;
     protected int type;
+    protected int grade;
     protected float speed;
     protected int x_weight;
     protected int y_weight;
@@ -42,6 +43,6 @@ public class Enemy extends GraphicObject {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        canvas.drawBitmap(m_bitmap, getX(), getY(), null);
+       // canvas.drawBitmap(m_bitmap, getX(), getY(), null);
     }
 }
