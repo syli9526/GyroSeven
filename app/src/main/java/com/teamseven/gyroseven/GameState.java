@@ -66,8 +66,8 @@ public class GameState implements IState {
             }
         } else {
             if (gameTime - lastLevelUp >= 1000) {
-                lastLevelUp = gameTime;
-                for (Enemy enemy : m_enemylist) enemy.speedUp(0.1f);
+                    lastLevelUp = gameTime;
+                    for (Enemy enemy : m_enemylist) enemy.speedUp(0.1f);
             }
         }
 
@@ -117,7 +117,7 @@ public class GameState implements IState {
 
         Paint p = new Paint();
         p.setTextSize(40);
-        p.setColor(Color.BLACK);
+        p.setColor(Color.WHITE);
         m_level = "Level : " + Integer.toString(level);
         _canvas.drawText(m_level, 0, 220, p);
     }
@@ -199,7 +199,7 @@ public class GameState implements IState {
 
             while (m_enemylist_2.size() < level) {
                 Enemy enemy = new Enemy_2();
-                int idx = randEnemy.nextInt(3);
+                int idx = randEnemy.nextInt(4);
                 enemy.movePattern = 4;
                 enemy.speedUp(randEnemy.nextInt(4));
                 enemy.setPosition(posX[idx], posY[idx]);

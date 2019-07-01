@@ -34,20 +34,20 @@ public class Enemy extends GraphicObject {
         switch (movePattern) {
 
             case Constants.MOVE_PATTERN_1:
-                setX(getX() + (int) speed*x_weight);
-                setY(getY() + (int) speed*y_weight);
+                setX(getX() + (int) speed * x_weight);
+                setY(getY() + (int) speed * y_weight);
                 break;
             case Constants.MOVE_PATTERN_2:
-                setX(getX() - (int) speed*x_weight);
-                setY(getY() + (int) speed*y_weight);
+                setX(getX() - (int) speed * x_weight);
+                setY(getY() + (int) speed * y_weight);
                 break;
             case Constants.MOVE_PATTERN_3:
-                setX(getX() - (int) speed*x_weight);
-                setY(getY() - (int) speed*y_weight);
+                setX(getX() - (int) speed * x_weight);
+                setY(getY() - (int) speed * y_weight);
                 break;
             case Constants.MOVE_PATTERN_4:
-                setX(getX() + (int) speed*x_weight);
-                setY(getY() - (int) speed*y_weight);
+                setX(getX() + (int) speed * x_weight);
+                setY(getY() - (int) speed * y_weight);
                 break;
             case Constants.MOVE_PATTERN_5:
                 if (x < getX()) setX(getX() - (int) speed);
@@ -65,7 +65,7 @@ public class Enemy extends GraphicObject {
         m_boundBox.set(getX(), getY(), getX() + getBitmap().getWidth(), getY() + getBitmap().getHeight());
     }
 
-    public void speedUp(float plus){
+    public void speedUp(float plus) {
         this.speed += plus;
     }
 

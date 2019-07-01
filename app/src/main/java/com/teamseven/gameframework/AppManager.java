@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -17,8 +18,8 @@ public class AppManager {
     private Resources m_resources;
 
     private Point size;
-    private Display display;
-    private Context context;
+    private DisplayMetrics displayMetrics;
+
 
     public static AppManager getInstance() {
         if (s_instance == null) s_instance = new AppManager();
@@ -28,14 +29,14 @@ public class AppManager {
     public Point getDeviceSize() {
 
         if (size == null) { //첫실행 한번만 디바이스 사이즈를 구해오기 위함
-            display = ((WindowManager) AppManager.getInstance().context.getSystemService(AppManager.getInstance().context.WINDOW_SERVICE)).getDefaultDisplay();
+            displayMetrics = m_resources.getDisplayMetrics();
             size = new Point();
-            display.getSize(size);
+            size.x = displayMetrics.widthPixels;
+            size.y = displayMetrics.heightPixels;
+
         }
         return size;
     }
-
-    void setContext(Context context){this.context = context;}
 
     void setGameView(GameView _gameView) {
         m_gameView = _gameView;

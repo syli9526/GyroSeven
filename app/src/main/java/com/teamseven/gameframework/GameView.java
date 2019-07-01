@@ -32,7 +32,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         AppManager.getInstance().setGameView(this);
         AppManager.getInstance().setResources(getResources());
-        AppManager.getInstance().setContext(context);
 
         getHolder().addCallback(this); // 콜백상태 지정
         m_thread = new GameViewThread(getHolder(), this);
