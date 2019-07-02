@@ -1,6 +1,5 @@
 package com.teamseven.gyroseven;
 
-import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 
@@ -27,6 +26,7 @@ public class Shield extends GraphicObject {
         setXY(px, py);
 
         m_matrix = _matrix;
+
         m_boundBox.set(m_x, m_y,
                 m_x + getBitmap().getWidth(),
                 m_y + getBitmap().getHeight());
