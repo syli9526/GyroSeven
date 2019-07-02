@@ -125,11 +125,8 @@ public class GameState implements IState {
     @Override
     public void render(Canvas _canvas) {
 
-        m_background.draw(_canvas);
-        m_player.draw(_canvas);
 
         m_background.draw(_canvas);
-        m_player.draw(_canvas);
         for (Enemy enemy : m_enemylist) {
             enemy.draw(_canvas);
         }
@@ -150,6 +147,7 @@ public class GameState implements IState {
             if (System.currentTimeMillis() - lastEvent >= 1000)
                 event = false;
         }
+        m_player.draw(_canvas);
 
         Paint p = new Paint();
         p.setTextSize(40);
