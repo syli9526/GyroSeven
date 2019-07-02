@@ -1,16 +1,11 @@
 package com.teamseven.gyroseven;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -23,7 +18,6 @@ import com.teamseven.gameframework.IState;
 import com.teamseven.gameframework.SoundManager;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 
@@ -68,13 +62,14 @@ public class GameState implements IState {
         Score s = new Score();
         s.update(0);
         m_score.add(s);
+
+        SoundManager.getInstance().playBackground();
     }
 
     @Override
     public void destroy() {
 
     }
-
 
     @Override
     public void update() {
@@ -99,6 +94,8 @@ public class GameState implements IState {
             }
 
         } else {
+            if (!SoundManager.getInstance().isPlayingBackground())
+                SoundManager.getInstance().playBackground();
             int cnt = 0;
 
             m_background.changeBackGround(level);
@@ -259,8 +256,8 @@ public class GameState implements IState {
     }
 
     public void makeItem(long gameTime) {
-        int itemNumber = randItem.nextInt(Constants.ITEM_NUMBER);
-        //int itemNumber = 3;
+        //int itemNumber = randItem.nextInt(Constants.ITEM_NUMBER);
+        int itemNumber = Constants.ITEM_SHIELD;
         if (gameTime - lastReagenItem >= 3000) {
             lastReagenItem = gameTime;
 
@@ -292,7 +289,6 @@ public class GameState implements IState {
                 if (shieldCnt == -1)
                     shieldCnt = i;
                 else {
-                    Log.d("myCheck", "remove shield!");
                     m_itemlist.remove(shieldCnt);
                     return;
                 }
@@ -388,6 +384,7 @@ public class GameState implements IState {
                         if (m_player.getLife() <= 0) {
                             m_player.die();
                             AppManager.getInstance().getGameView().getVibrator().vibrate(300);
+                            SoundManager.getInstance().stopBackground();
                         } else {
                             AppManager.getInstance().getGameView().getVibrator().vibrate(100);
                         }

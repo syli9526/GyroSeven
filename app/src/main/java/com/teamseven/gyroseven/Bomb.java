@@ -24,8 +24,8 @@ public class Bomb extends SpriteAnimation {
         m_rect.left = m_currentFrame * m_spriteWIdth + 4;
         m_rect.right = m_rect.left + m_spriteWIdth - 4;
 
-        m_boundBox.set(m_x - 20, m_y - 20,
-                m_x + getBitmap().getWidth() + 20 ,
-                m_y + getBitmap().getHeight() + 20);
+        m_boundBox.set(m_x - 10, m_y - 10,
+                m_x + getBitmap().getWidth() + 10 ,
+                m_y + getBitmap().getHeight() + 10);
     }
 }

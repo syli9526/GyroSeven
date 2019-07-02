@@ -24,7 +24,7 @@ public class SoundManager {
 
     public void initBackground(Context _context, int _soundID) {
         m_mediaPlayer = MediaPlayer.create(_context, _soundID);
-        m_mediaPlayer.setVolume(60,60);
+        m_mediaPlayer.setVolume(100,100);
     }
 
     public void setBackgroundVolume(int _volume) {
@@ -45,6 +45,14 @@ public class SoundManager {
 
     public void playBackground() {
         m_mediaPlayer.start();
+    }
+
+    public void stopBackground() {
+        m_mediaPlayer.stop();
+    }
+
+    public boolean isPlayingBackground() {
+        return m_mediaPlayer.isPlaying();
     }
 
     public void play(int _index) {

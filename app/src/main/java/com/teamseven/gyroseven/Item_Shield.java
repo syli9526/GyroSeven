@@ -60,8 +60,7 @@ public class Item_Shield extends Item {
                 return;
             }
 
-            int x = _game.m_player.getCenterX() - m_shield.getBitmap().getWidth() / 2;
-            int y = _game.m_player.getCenterY() - m_shield.getBitmap().getHeight() / 2;
+
 
             //m_matrix.reset();
             //m_matrix = _game.m_player.getMatrix();
@@ -69,7 +68,7 @@ public class Item_Shield extends Item {
              //       (getY() + _game.m_player.getY()) / 2);
             //m_matrix.setTranslate(getX(), getY());
 
-            m_shield.update(x, y, _game.m_player.getMatrix());
+            m_shield.update(_game.m_player);
         }
     }
 

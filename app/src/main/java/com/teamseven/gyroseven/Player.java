@@ -17,6 +17,7 @@ public class Player extends SpriteAnimation {
     private float m_speed;
     private int m_centerX;
     private int m_centerY;
+    private float m_degrees;
 
     protected Rect m_boundBox = new Rect();
 
@@ -144,13 +145,15 @@ public class Player extends SpriteAnimation {
         // 스마트폰을 기울이는 방향에 따라 player 방향 전환
         double dx = -pitch;
         double dy = -roll;
-        float degrees = (float) Math.toDegrees(Math.atan2(dx, dy));
-        //m_matrix.setRotate(degrees, getBitmapWidth() / 2, getBitmapHeight() / 2);
+        m_degrees = (float) Math.toDegrees(Math.atan2(dx, dy));
+        //m_matrix.setRotate(degrees, getBitmapWidth() / 2, getBitmapHeight() / 2);\
 
-        m_matrix.reset();
         //m_matrix.setTranslate(getX(), getY());
-        m_matrix.setRotate(degrees, getCenterX(), getCenterY());
+        //m_matrix.setRotate(m_degrees, getCenterX(), getCenterY());
+        m_matrix.setRotate(m_degrees, getCenterX(), getCenterY());
     }
+
+    public float getDegrees() { return m_degrees; }
 
     public int getLife() {
         return m_life;

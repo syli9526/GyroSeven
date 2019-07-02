@@ -40,7 +40,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         AppManager.getInstance().setGameView(this);
         AppManager.getInstance().setResources(getResources());
 
-        //SoundManager.getInstance().initBackground(context, R.raw.background_game);
+        SoundManager.getInstance().initBackground(context, R.raw.background_game);
         SoundManager.getInstance().init(context);
         SoundManager.getInstance().addSound(Constants.EFFECT_START, R.raw.game_start);
         SoundManager.getInstance().addSound(Constants.EFFECT_LEVELUP, R.raw.level_up);
