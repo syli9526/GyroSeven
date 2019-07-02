@@ -18,11 +18,13 @@ public class Player extends SpriteAnimation {
     public Player(Bitmap _bitmap) {
         super(_bitmap);
         super.initSpriteData(getBitmap().getWidth() / 4, getBitmap().getHeight(), 8, 4);
-        super.setPosition(AppManager.getInstance().getDeviceSize().x / 2, AppManager.getInstance().getDeviceSize().y / 2);
+        super.setPosition(AppManager.getInstance().getDeviceSize().x / 2, AppManager.getInstance().getDeviceSize().y);
+
 
         m_life = 3;
         m_speed = 8.0f;
     }
+
 
     @Override
     public void draw(Canvas _canvas) {

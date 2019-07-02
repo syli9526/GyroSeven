@@ -20,6 +20,7 @@ public class BackGround extends SpriteAnimation {
             if (i == 0) bitmap[i] = Bitmap.createScaledBitmap(bitmap[i], AppManager.getInstance().getDeviceSize().x * 2, AppManager.getInstance().getDeviceSize().y, true);
             else bitmap[i] = Bitmap.createScaledBitmap(bitmap[i], AppManager.getInstance().getDeviceSize().x, AppManager.getInstance().getDeviceSize().y, true);
         }
+
         switch (backType) {
             case 0:
                 super.m_bitmap = bitmap[0];

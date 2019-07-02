@@ -11,7 +11,6 @@ public class Enemy extends GraphicObject {
     public int state = Constants.STATE_NORMAL;
 
     protected int movePattern;
-    protected int type;
     protected int grade;
     protected float speed;
     protected int x_weight;
