@@ -9,7 +9,7 @@ public class Item_Bomb extends Item  {
         super(AppManager.getInstance().getBitmap(R.drawable.item_bomb));
         super.initSpriteData(getBitmap().getWidth() / 2, getBitmap().getHeight(),2 , 2);
 
-        ITEM_NUMBER = Constants.ITEM_HEART;
+        ITEM_NUMBER = Constants.ITEM_BOMB;
     }
 
     @Override
