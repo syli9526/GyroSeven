@@ -25,8 +25,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private IState m_state;
     private GameViewThread m_thread;
 
-    MediaPlayer m_Sound_Background;
-    SoundPool m_SoundPool;
+    public MediaPlayer m_Sound_Background;
 
     public GameView(Context context) {
         super(context);
@@ -41,8 +40,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         AppManager.getInstance().setGameView(this);
         AppManager.getInstance().setResources(getResources());
 
-        //m_SoundPool= new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        //m_Sound_BackGround = MediaPlayer.create(context, R.raw.background);
+        SoundManager.getInstance().initBackground(context, R.raw.background_game);
         SoundManager.getInstance().init(context);
         SoundManager.getInstance().addSound(Constants.EFFECT_START, R.raw.game_start);
         SoundManager.getInstance().addSound(Constants.EFFECT_LEVELUP, R.raw.level_up);

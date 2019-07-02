@@ -2,12 +2,15 @@ package com.teamseven.gameframework;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 
 import java.util.HashMap;
 
 public class SoundManager {
     static private SoundManager s_instance;
+
+    MediaPlayer m_mediaPlayer;
 
     private SoundPool m_soundPool;
     private HashMap m_soundPoolMap;
@@ -19,8 +22,13 @@ public class SoundManager {
         return s_instance;
     }
 
+    public void initBackground(Context _context, int _soundID) {
+        m_mediaPlayer = MediaPlayer.create(_context, _soundID);
+        m_mediaPlayer.setVolume(15,15);
+    }
+
     public void init(Context _context) {
-        m_soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+        m_soundPool = new SoundPool(8, AudioManager.STREAM_MUSIC, 0);
         m_soundPoolMap = new HashMap();
         m_audioManager = (AudioManager) _context.getSystemService(Context.AUDIO_SERVICE);
         m_activity = _context;
@@ -29,6 +37,10 @@ public class SoundManager {
     public void addSound(int _index, int _soundID) {
         int id = m_soundPool.load(m_activity, _soundID, 1);
         m_soundPoolMap.put(_index, id);
+    }
+
+    public void playBackground() {
+        m_mediaPlayer.start();
     }
 
     public void play(int _index) {

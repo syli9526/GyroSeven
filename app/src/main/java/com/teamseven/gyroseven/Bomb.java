@@ -8,13 +8,13 @@ import com.teamseven.gameframework.SpriteAnimation;
 
 public class Bomb extends SpriteAnimation {
 
-    protected long itemTime = 1000;
+    protected long itemTime = 990;
 
     protected Rect m_boundBox = new Rect();
 
     public Bomb() {
         super(AppManager.getInstance().getBitmap(R.drawable.bomb));
-        super.initSpriteData(getBitmap().getWidth() / 6, getBitmap().getHeight(), 6, 6);
+        super.initSpriteData(getBitmap().getWidth() / 8, getBitmap().getHeight(), 8, 8);
     }
 
     @Override

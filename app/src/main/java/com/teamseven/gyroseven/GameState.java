@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.media.MediaPlayer;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -59,6 +60,8 @@ public class GameState implements IState {
         Score s = new Score();
         s.update(0);
         m_score.add(s);
+
+        SoundManager.getInstance().playBackground();
     }
 
     @Override
@@ -232,7 +235,7 @@ public class GameState implements IState {
 
         // 레벨 계산
         if (level < 6) {
-            if (gameTime - lastLevelUp >= 20000) {
+            if (gameTime - lastLevelUp >= 10000) {
                 lastEvent = System.currentTimeMillis();
                 lastLevelUp = gameTime;
                 event = true;
