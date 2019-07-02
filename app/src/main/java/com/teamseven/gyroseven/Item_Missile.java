@@ -44,7 +44,7 @@ public class Item_Missile extends Item {
                 Bitmap rotate = Bitmap.createBitmap(m_missile[i].getBitmap(), 0, 0,
                         m_missile[i].getBitmap().getWidth(), m_missile[i].getBitmap().getHeight(), matrix, true);
 
-                _canvas.drawBitmap(rotate, m_missile[i].getX(), m_missile[i].getY(), null);
+                if(_canvas!=null) _canvas.drawBitmap(rotate, m_missile[i].getX(), m_missile[i].getY(), null);
             }
         }
     }

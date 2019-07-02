@@ -48,7 +48,7 @@ public class SpriteAnimation extends GraphicObject {
         Rect dest = new Rect(getX(), getY(),
                 getX() + m_spriteWIdth, getY() + m_spriteHeight);
 
-        _canvas.drawBitmap(getBitmap(), m_rect, dest, null);
+        if(_canvas!=null) _canvas.drawBitmap(getBitmap(), m_rect, dest, null);
     }
 
     public void update(long gameTime) {

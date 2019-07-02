@@ -30,7 +30,7 @@ public class Item_Shield extends Item {
             Bitmap rotate = Bitmap.createBitmap(m_shield.getBitmap(), 0, 0,
                     m_shield.getBitmap().getWidth(), m_shield.getBitmap().getHeight(), m_shield.m_matrix, true);
 
-            _canvas.drawBitmap(rotate, m_shield.getX(), m_shield.getY(), null);
+            if(_canvas!=null)  _canvas.drawBitmap(rotate, m_shield.getX(), m_shield.getY(), null);
         }
     }
 

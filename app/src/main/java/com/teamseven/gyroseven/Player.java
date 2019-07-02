@@ -60,7 +60,7 @@ public class Player extends SpriteAnimation {
             else
                 alpha.setAlpha(255);
 
-            _canvas.drawBitmap(rotate, m_x, m_y, alpha);
+            if(_canvas!=null) _canvas.drawBitmap(rotate, m_x, m_y, alpha);
         }
 
         else if (playerState == Constants.STATE_EXPLODED) {

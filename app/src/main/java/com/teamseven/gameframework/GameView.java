@@ -123,4 +123,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public Vibrator getVibrator() {
         return m_vibrator;
     }
+
+    public void setThreadRun(boolean flag){ m_thread.setRunning(flag);}
 }
