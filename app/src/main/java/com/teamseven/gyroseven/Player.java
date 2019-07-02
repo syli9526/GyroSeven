@@ -18,7 +18,7 @@ public class Player extends SpriteAnimation {
     public Player(Bitmap _bitmap) {
         super(_bitmap);
         super.initSpriteData(getBitmap().getWidth() / 4, getBitmap().getHeight(), 8, 4);
-        super.setPosition(AppManager.getInstance().getDeviceSize().x / 2, AppManager.getInstance().getDeviceSize().y);
+        super.setPosition((AppManager.getInstance().getDeviceSize().x - getBitmapWidth()) / 2, AppManager.getInstance().getDeviceSize().y);
 
 
         m_life = 3;
@@ -100,7 +100,7 @@ public class Player extends SpriteAnimation {
         return m_centerY;
     }
 
-    public void setSpeed(int _speed) {
+    public void setSpeed(float _speed) {
         m_speed = _speed;
     }
 

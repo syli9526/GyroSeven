@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -24,7 +23,7 @@ public class GameState implements IState {
     protected ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
     protected ArrayList<Item> m_itemlist = new ArrayList<Item>();
     protected Heart m_heart;
-    protected SpeedUp m_speedUp;
+    protected Alert m_alert;
     protected ArrayList<Score> m_score = new ArrayList<>();
 
 
@@ -55,11 +54,10 @@ public class GameState implements IState {
         m_player = new Player(AppManager.getInstance().getBitmap(R.drawable.player_sprite));
         m_background = new BackGround(level);
         m_heart = new Heart();
-        m_speedUp = new SpeedUp();
+        m_alert = new Alert();
         Score s = new Score();
         s.update(0);
         m_score.add(s);
-
     }
 
     @Override
@@ -71,14 +69,22 @@ public class GameState implements IState {
     public void update() {
         long gameTime = System.currentTimeMillis();
         if (intro) {
-            m_player.setSpeed(1);
+            m_player.setSpeed(0.5f);
             m_player.update(gameTime);
             m_player.move(0, -90);
-            if (m_player.getCenterY() <= AppManager.getInstance().getDeviceSize().y / 2) {
+            if (m_player.getCenterY() >= AppManager.getInstance().getDeviceSize().y / 4 * 3) {
+                event = true;
+            } else if (m_player.getCenterY() > AppManager.getInstance().getDeviceSize().y / 2) {
+                event = true;
+                m_alert.setBitmap(AppManager.getInstance().getBitmap(R.drawable.start));
+            } else if (m_player.getCenterY() <= AppManager.getInstance().getDeviceSize().y / 2) {
                 intro = false;
+                m_alert.setBitmap(AppManager.getInstance().getBitmap(R.drawable.speed_up));
+                m_alert.setPosition((AppManager.getInstance().getDeviceSize().x - m_alert.getBitmap().getWidth()) / 2,
+                        (AppManager.getInstance().getDeviceSize().y - m_alert.getBitmap().getHeight()) - 10);
                 m_player.setSpeed(8);
-
             }
+
         } else {
             int cnt = 0;
             m_background.changeBackGround(level);
@@ -125,7 +131,6 @@ public class GameState implements IState {
     @Override
     public void render(Canvas _canvas) {
 
-
         m_background.draw(_canvas);
         for (Enemy enemy : m_enemylist) {
             enemy.draw(_canvas);
@@ -142,12 +147,13 @@ public class GameState implements IState {
             m_heart.draw(_canvas);
         }
 
+        m_player.draw(_canvas);
+
         if (event) {
-            m_speedUp.draw(_canvas);
+            m_alert.draw(_canvas);
             if (System.currentTimeMillis() - lastEvent >= 1000)
                 event = false;
         }
-        m_player.draw(_canvas);
 
         Paint p = new Paint();
         p.setTextSize(40);
