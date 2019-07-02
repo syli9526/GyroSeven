@@ -1,6 +1,4 @@
 package com.teamseven.gyroseven;
-
-import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import com.teamseven.gameframework.AppManager;
@@ -18,9 +16,9 @@ public class Score extends SpriteAnimation {
 
     @Override
     public void update(long num) {
-        m_num = (int)num;
+        m_num = (int) num;
         m_boundBox.set(m_x, m_y, m_x + getBitmapWidth(), m_y + getBitmapHeight());
-        m_rect.left = m_spriteWIdth * (int) num;
-        m_rect.right = m_rect.left + m_spriteWIdth;
+        m_rect.left = m_spriteWIdth * (int) num + 4;
+        m_rect.right = m_rect.left + m_spriteWIdth - 4;
     }
 }

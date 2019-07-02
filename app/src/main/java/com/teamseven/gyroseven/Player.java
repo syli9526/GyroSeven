@@ -33,7 +33,8 @@ public class Player extends SpriteAnimation {
     public Player(Bitmap _bitmap) {
         super(_bitmap);
         super.initSpriteData(getBitmap().getWidth() / 4, getBitmap().getHeight(), 8, 4);
-        super.setPosition(AppManager.getInstance().getDeviceSize().x / 2, AppManager.getInstance().getDeviceSize().y / 2);
+        super.setPosition((AppManager.getInstance().getDeviceSize().x - getBitmapWidth()) / 2, AppManager.getInstance().getDeviceSize().y);
+
 
         alpha = new Paint();
 
@@ -44,6 +45,7 @@ public class Player extends SpriteAnimation {
 
         m_twinkleSet = false;
     }
+
 
     @Override
     public void draw(Canvas _canvas) {
@@ -173,7 +175,7 @@ public class Player extends SpriteAnimation {
         return m_centerY;
     }
 
-    public void setSpeed(int _speed) {
+    public void setSpeed(float _speed) {
         m_speed = _speed;
     }
 
