@@ -24,7 +24,7 @@ public class BackGround extends SpriteAnimation {
         switch (backType) {
             case 0:
                 super.m_bitmap = bitmap[0];
-                super.initSpriteData(m_bitmap.getWidth()/2, m_bitmap.getHeight(), 10, 2);
+                super.initSpriteData(m_bitmap.getWidth()/2, m_bitmap.getHeight(), 4, 2);
                 break;
             case 1:
                 super.m_bitmap = bitmap[1];

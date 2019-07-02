@@ -9,13 +9,13 @@ public class Item extends SpriteAnimation {
 
     protected Rect m_boundBox = new Rect();
     protected int itemState = Constants.STATE_ITEM_MADE;
-    public static int ITEM_NUMBER;
+    public int ITEM_NUMBER;
 
     public Item(Bitmap _bitmap) {
         super(_bitmap);
     }
 
-    public void update(long gameTime) {
+    public void update(long gameTime, GameState _game) {
         super.update(gameTime);
 
         m_boundBox.set(m_x, m_y,

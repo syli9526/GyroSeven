@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 
 import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.CollisionManager;
+import com.teamseven.gameframework.GameView;
 
 public class Item_Missile extends Item {
 
@@ -49,9 +50,9 @@ public class Item_Missile extends Item {
     }
 
     @Override
-    public void update(long gameTime) {
+    public void update(long gameTime, GameState _game) {
         if (itemState == Constants.STATE_ITEM_MADE) {
-            super.update(gameTime);
+            super.update(gameTime, _game);
         }
         else if (itemState == Constants.STATE_ITEM_ACTIONED) {
             m_outCount = 0;

@@ -66,4 +66,5 @@ public class SpriteAnimation extends GraphicObject {
     public int getIFrames() {
         return m_iFrames;
     }
+    public Matrix getMatrix() { return m_matrix; }
 }

@@ -18,10 +18,6 @@ public class Missile extends GraphicObject {
     public Missile() {
         super(AppManager.getInstance().getBitmap(R.drawable.missile));
 
-        m_boundBox.set(m_x - getBitmap().getWidth()/2, m_y - getBitmap().getWidth()/2,
-                m_x + getBitmap().getWidth() + getBitmap().getWidth(),
-                m_y + getBitmap().getHeight() + getBitmap().getHeight());
-
         m_speed = 30.0f;
         m_out = false;
     }

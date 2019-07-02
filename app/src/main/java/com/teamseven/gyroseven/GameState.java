@@ -3,8 +3,10 @@ package com.teamseven.gyroseven;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -77,7 +79,6 @@ public class GameState implements IState {
                 m_player.setSpeed(8);
 
             }
-
         } else {
             int cnt = 0;
             m_background.changeBackGround(level);
@@ -94,12 +95,21 @@ public class GameState implements IState {
                 enemy.update();
             }
 
+
             numOfEmemy_2 = cnt;
 
             for (int i = m_itemlist.size() - 1; i >= 0; i--) {
                 Item item = m_itemlist.get(i);
                 if (item.itemState != Constants.STATE_ITEM_FINISHED) {
                     item.update(gameTime);
+                } else {
+                    m_itemlist.remove(i);
+                }
+            }
+            for (int i = m_itemlist.size() - 1; i >= 0; i--) {
+                Item item = m_itemlist.get(i);
+                if (item.itemState != Constants.STATE_ITEM_FINISHED) {
+                    item.update(gameTime, this);
                 } else {
                     m_itemlist.remove(i);
                 }
@@ -216,9 +226,9 @@ public class GameState implements IState {
     }
 
     public void makeItem(long gameTime) {
-        int itemNumber = randItem.nextInt(2);
-
-        if (gameTime - lastReagenItem >= 5000) {
+        int itemNumber = randItem.nextInt(3);
+        //int itemNumber = 1;
+        if (gameTime - lastReagenItem >= 1000) {
             lastReagenItem = gameTime;
 
             Item newItem = new Item(null);
@@ -227,6 +237,8 @@ public class GameState implements IState {
                 newItem = new Item_Heart();
             } else if (itemNumber == Constants.ITEM_MISSILE) {
                 newItem = new Item_Missile();
+            } else if (itemNumber == Constants.ITEM_SHIELD) {
+                newItem = new Item_Shield();
             }
 
             newItem.setPosition(randEnemy.nextInt((AppManager.getInstance().getDeviceSize().x) - newItem.getBitmapWidth()),
@@ -294,8 +306,13 @@ public class GameState implements IState {
 
     public void checkCollision() {
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
+            Rect resize = new Rect();
+            resize.set(m_player.m_boundBox.left + 10,
+                    m_player.m_boundBox.top + 10,
+                    m_player.m_boundBox.right - 10,
+                    m_player.m_boundBox.bottom - 10);
             if (CollisionManager.checkCircleToCircle(
-                    m_player.m_boundBox, m_enemylist.get(i).m_boundBox)) {
+                    resize, m_enemylist.get(i).m_boundBox)) {
                 m_enemylist.remove(i);
                 m_player.damagePlayer();
                 if (m_player.getLife() <= 0) {
@@ -303,7 +320,6 @@ public class GameState implements IState {
                 }
             }
         }
-
 
         for (int i = m_itemlist.size() - 1; i >= 0; i--) {
             if (m_itemlist.get(i).itemState == Constants.STATE_ITEM_MADE) {
@@ -313,7 +329,6 @@ public class GameState implements IState {
                 }
             }
         }
-
 
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
             for (int j = m_itemlist.size() - 1; j >= 0; j--) {
@@ -327,6 +342,20 @@ public class GameState implements IState {
                             m_enemylist.remove(i);
                             return;
                         }
+                    }
+                }
+            }
+        }
+
+        for (int i = m_enemylist.size() - 1; i >= 0; i--) {
+            for (int j = m_itemlist.size() - 1; j >= 0; j--) {
+                if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_SHIELD &&
+                        m_itemlist.get(j).itemState == Constants.STATE_ITEM_ACTIONED) {
+                    Item_Shield sd = (Item_Shield) m_itemlist.get(j);
+                    if (CollisionManager.checkBoxToBox(
+                            sd.shield.m_boundBox, m_enemylist.get(i).m_boundBox)) {
+                        m_enemylist.remove(i);
+                        return;
                     }
                 }
             }
