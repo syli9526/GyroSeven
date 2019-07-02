@@ -11,6 +11,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.media.MediaPlayer;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -38,7 +40,7 @@ public class GameState implements IState {
     private boolean event = false;
     private int frequency = 3000;
     private int level = 1;
-    private float timeWeight = 0.0f;
+    private int timeWeight = 0;
     private int numOfEmemy_2 = 0;
     private long lastScore = 0;
     private boolean intro = true;
@@ -88,6 +90,7 @@ public class GameState implements IState {
                 event = true;
                 m_alert.setBitmap(AppManager.getInstance().getBitmap(R.drawable.start));
             } else if (m_player.getCenterY() <= AppManager.getInstance().getDeviceSize().y / 2) {
+                AppManager.getInstance().setGame(true);
                 intro = false;
                 m_alert.setBitmap(AppManager.getInstance().getBitmap(R.drawable.speed_up));
                 m_alert.setPosition((AppManager.getInstance().getDeviceSize().x - m_alert.getBitmap().getWidth()) / 2,
@@ -130,31 +133,7 @@ public class GameState implements IState {
                 m_player.move(m_pitch, m_roll);
 
                 m_background.changeBackGround(level);
-
-                if (gameTime - lastUpdateScore >= 500) {
-                    lastUpdateScore = gameTime;
-                    lastScore += level;
-                }
-
-                if (level < 6) {
-                    if (gameTime - lastLevelUp >= 20000) {
-                        SoundManager.getInstance().play(Constants.EFFECT_LEVELUP);
-                        lastEvent = System.currentTimeMillis();
-                        event = true;
-                        lastLevelUp = gameTime;
-                        level++;
-                        frequency -= 500;
-                        for (Enemy enemy : m_enemylist) enemy.speedUp(1f);
-                    }
-                } else {
-                    if (gameTime - lastLevelUp >= 1000) {
-                        lastLevelUp = gameTime;
-                        for (Enemy enemy : m_enemylist) enemy.speedUp(0.1f);
-                    }
-                }
-
                 numOfEmemy_2 = cnt;
-
                 updateScore();
                 makeEnemy();
                 if (m_itemlist.size() < 5)
@@ -165,38 +144,54 @@ public class GameState implements IState {
         }
     }
 
+    private void viewDialog() {
+        Handler mHandler = new Handler(Looper.getMainLooper());
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AppManager.getInstance().getDialog().show();
+            }
+
+        }, 0);
+    }
+
     @Override
     public void render(Canvas _canvas) {
 
-        m_background.draw(_canvas);
-        for (Enemy enemy : m_enemylist) {
-            enemy.draw(_canvas);
-        }
-        for (Item item : m_itemlist) {
-            item.draw(_canvas);
-        }
-        for (int i = m_score.size() - 1; i >= 0; i--) {
-            m_score.get(i).setPosition(AppManager.getInstance().getDeviceSize().x - m_score.get(i).getBitmapWidth() * (i + 1) - 10, 5);
-            m_score.get(i).draw(_canvas);
-        }
-        for (int i = 0; i < m_player.getLife(); i++) {
-            m_heart.setPosition(5 + m_heart.getBitmap().getWidth() * i, 5);
-            m_heart.draw(_canvas);
-        }
+        if (m_player.playerState == Constants.STATE_ENDED && AppManager.getInstance().isGame()) {
+            viewDialog();
+            AppManager.getInstance().setGame(false);
+        } else {
+            m_background.draw(_canvas);
+            for (Enemy enemy : m_enemylist) {
+                enemy.draw(_canvas);
+            }
+            for (Item item : m_itemlist) {
+                item.draw(_canvas);
+            }
+            for (int i = m_score.size() - 1; i >= 0; i--) {
+                m_score.get(i).setPosition(AppManager.getInstance().getDeviceSize().x - m_score.get(i).getBitmapWidth() * (i + 1) - 10, 5);
+                m_score.get(i).draw(_canvas);
+            }
+            for (int i = 0; i < m_player.getLife(); i++) {
+                m_heart.setPosition(5 + m_heart.getBitmap().getWidth() * i, 5);
+                m_heart.draw(_canvas);
+            }
 
-        m_player.draw(_canvas);
+            m_player.draw(_canvas);
 
-        if (event) {
-            m_alert.draw(_canvas);
-            if (System.currentTimeMillis() - lastEvent >= 1000)
-                event = false;
+            if (event) {
+                m_alert.draw(_canvas);
+                if (System.currentTimeMillis() - lastEvent >= 1000)
+                    event = false;
+            }
+
+            Paint p = new Paint();
+            p.setTextSize(40);
+            p.setColor(Color.WHITE);
+            String m_level = "Level : " + Integer.toString(level);
+            _canvas.drawText(m_level, 20, 130, p);
         }
-
-        Paint p = new Paint();
-        p.setTextSize(40);
-        p.setColor(Color.WHITE);
-        String m_level = "Level : " + Integer.toString(level);
-        _canvas.drawText(m_level, 20, 130, p);
     }
 
     @Override
@@ -241,12 +236,12 @@ public class GameState implements IState {
         // 스코어 계산
         if (gameTime - lastUpdateScore >= 500) {
             lastUpdateScore = gameTime;
-            lastScore += level;
+            lastScore += (level+timeWeight);
         }
 
         // 레벨 계산
         if (level < 6) {
-            if (gameTime - lastLevelUp >= 10000) {
+            if (gameTime - lastLevelUp >= 20000) {
                 lastEvent = System.currentTimeMillis();
                 lastLevelUp = gameTime;
                 event = true;
@@ -257,7 +252,7 @@ public class GameState implements IState {
         } else {
             if (gameTime - lastLevelUp >= 1000) {
                 lastLevelUp = gameTime;
-                timeWeight += 0.002f;
+                timeWeight += 1;
                 for (Enemy enemy : m_enemylist) enemy.speedUp(timeWeight);
             }
         }
@@ -315,7 +310,6 @@ public class GameState implements IState {
         }
     }
 
-
     public void updateScore() {
 
         long num = lastScore;
@@ -325,7 +319,6 @@ public class GameState implements IState {
             else m_score.get(idx).update(num % 10);
             num = num / 10;
             idx++;
-
         }
         if (idx >= m_score.size()) makeScore(num % 10);
         else m_score.get(idx).update(num % 10);
@@ -418,7 +411,7 @@ public class GameState implements IState {
 
                 if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_MISSILE &&
                         m_itemlist.get(j).itemState == Constants.STATE_ITEM_ACTIONED) {
-                    Item_Missile missile = (Item_Missile)m_itemlist.get(j);
+                    Item_Missile missile = (Item_Missile) m_itemlist.get(j);
                     for (int k = 0; k < 8; k++) {
                         if (CollisionManager.checkBoxToBox(
                                 missile.m_missile[k].m_boundBox, m_enemylist.get(i).m_boundBox)) {
@@ -427,9 +420,7 @@ public class GameState implements IState {
                             return;
                         }
                     }
-                }
-
-                else if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_SHIELD &&
+                } else if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_SHIELD &&
                         m_itemlist.get(j).itemState == Constants.STATE_ITEM_ACTIONED) {
                     Item_Shield shield = (Item_Shield) m_itemlist.get(j);
                     if (CollisionManager.checkBoxToBox(
@@ -438,9 +429,7 @@ public class GameState implements IState {
                         m_enemylist.remove(i);
                         return;
                     }
-                }
-
-                else if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_BOMB &&
+                } else if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_BOMB &&
                         m_itemlist.get(j).itemState == Constants.STATE_ITEM_ACTIONED) {
                     Item_Bomb bomb = (Item_Bomb) m_itemlist.get(j);
                     if (CollisionManager.checkBoxToBox(

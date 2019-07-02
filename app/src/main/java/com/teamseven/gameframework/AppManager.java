@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
+import android.util.Log;
+
+import com.teamseven.gyroseven.EndDialog;
 
 public class AppManager {
 
@@ -12,7 +15,9 @@ public class AppManager {
 
     private GameView m_gameView;
     private Resources m_resources;
+    private EndDialog m_dialog;
 
+    private boolean game = false;
     private Point size;
     private DisplayMetrics displayMetrics;
 
@@ -34,6 +39,24 @@ public class AppManager {
         return size;
     }
 
+
+    public EndDialog getDialog() {
+        Log.v("Dialog","get dialog");
+        return m_dialog;
+    }
+
+    public void setDialog(EndDialog m_dialog) {
+        this.m_dialog = m_dialog;
+        Log.v("Dialog","set dialog");
+    }
+
+    public boolean isGame() {
+        return game;
+    }
+
+    public void setGame(boolean game) {
+        this.game = game;
+    }
     void setGameView(GameView _gameView) {
         m_gameView = _gameView;
     }
