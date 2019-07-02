@@ -186,8 +186,8 @@ public class GameState implements IState {
             Paint p = new Paint();
             p.setTextSize(40);
             p.setColor(Color.WHITE);
-            String m_level = "Level : " + Integer.toString(level);
-            _canvas.drawText(m_level, 20, 130, p);
+            //String m_level = "Level : " + Integer.toString(level);
+            //_canvas.drawText(m_level, 20, 130, p);
         }
     }
 
@@ -256,9 +256,8 @@ public class GameState implements IState {
     }
 
     public void makeItem(long gameTime) {
-        //int itemNumber = randItem.nextInt(Constants.ITEM_NUMBER);
-        int itemNumber = Constants.ITEM_SHIELD;
-        if (gameTime - lastReagenItem >= 3000) {
+        int itemNumber = randItem.nextInt(Constants.ITEM_NUMBER);
+        if (gameTime - lastReagenItem >= 5000) {
             lastReagenItem = gameTime;
 
             Item newItem = new Item(null);
