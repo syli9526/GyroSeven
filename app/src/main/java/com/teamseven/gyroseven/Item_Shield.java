@@ -9,8 +9,7 @@ import com.teamseven.gameframework.AppManager;
 
 public class Item_Shield extends Item {
 
-    Shield shield;
-    private long shieldTime = 3000;
+    Shield m_shield;
     private long startTime = 0;
 
     public Item_Shield() {
@@ -27,10 +26,10 @@ public class Item_Shield extends Item {
         }
 
         else if (itemState == Constants.STATE_ITEM_ACTIONED) {
-            Bitmap rotate = Bitmap.createBitmap(shield.getBitmap(), 0, 0,
-                    shield.getBitmap().getWidth(), shield.getBitmap().getHeight(), shield.m_matrix, true);
+            Bitmap rotate = Bitmap.createBitmap(m_shield.getBitmap(), 0, 0,
+                    m_shield.getBitmap().getWidth(), m_shield.getBitmap().getHeight(), m_shield.m_matrix, true);
 
-            _canvas.drawBitmap(rotate, shield.getX(), shield.getY(), null);
+            _canvas.drawBitmap(rotate, m_shield.getX(), m_shield.getY(), null);
         }
     }
 
@@ -38,9 +37,9 @@ public class Item_Shield extends Item {
     public void actionItem(GameState _game) {
         itemState = Constants.STATE_ITEM_ACTIONED;
 
-        shield = new Shield();
-        shield.setXY(_game.m_player.getCenterX() - shield.getBitmap().getWidth() / 2,
-                _game.m_player.getCenterY() - shield.getBitmap().getHeight() / 2);
+        m_shield = new Shield();
+        m_shield.setPosition(_game.m_player.getCenterX() - m_shield.getBitmap().getWidth() / 2,
+                _game.m_player.getCenterY() - m_shield.getBitmap().getHeight() / 2);
     }
 
     @Override
@@ -53,14 +52,14 @@ public class Item_Shield extends Item {
 
         else if (itemState == Constants.STATE_ITEM_ACTIONED) {
 
-            if (gameTime - startTime > shieldTime) {
+            if (gameTime - startTime > m_shield.itemTime) {
                 itemState = Constants.STATE_ITEM_FINISHED;
 
                 return;
             }
 
-            int x = _game.m_player.getCenterX() - shield.getBitmap().getWidth() / 2;
-            int y = _game.m_player.getCenterY() - shield.getBitmap().getHeight() / 2;
+            int x = _game.m_player.getCenterX() - m_shield.getBitmap().getWidth() / 2;
+            int y = _game.m_player.getCenterY() - m_shield.getBitmap().getHeight() / 2;
             /*
             float sp[] = new float[2];
             sp[0] = (float)_game.m_player.getCenterX();
@@ -78,7 +77,7 @@ public class Item_Shield extends Item {
             shield.update((int)sp[0], (int)sp[1], (int)fp[0], (int)fp[1], _game.m_player.getMatrix());
             */
 
-            shield.update(x, y, _game.m_player.getMatrix());
+            m_shield.update(x, y, _game.m_player.getMatrix());
         }
     }
 

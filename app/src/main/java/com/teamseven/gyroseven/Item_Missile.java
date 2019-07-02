@@ -5,12 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 
 import com.teamseven.gameframework.AppManager;
-import com.teamseven.gameframework.CollisionManager;
-import com.teamseven.gameframework.GameView;
 
 public class Item_Missile extends Item {
 
-    Missile missile[] =  new Missile[8];
+    Missile m_missile[] =  new Missile[8];
     protected int m_outCount;
 
     public Item_Missile() {
@@ -25,9 +23,9 @@ public class Item_Missile extends Item {
         itemState = Constants.STATE_ITEM_ACTIONED;
 
         for (int i = 0; i < 8; i++) {
-            missile[i] = new Missile();
-            missile[i].moveState = i;
-            missile[i].setXY(getX(), getY());
+            m_missile[i] = new Missile();
+            m_missile[i].moveState = i;
+            m_missile[i].setPosition(getX(), getY());
         }
     }
 
@@ -41,10 +39,10 @@ public class Item_Missile extends Item {
                 Matrix matrix = new Matrix();
                 matrix.setRotate(45 * i);
 
-                Bitmap rotate = Bitmap.createBitmap(missile[i].getBitmap(), 0, 0,
-                        missile[i].getBitmap().getWidth(), missile[i].getBitmap().getHeight(), matrix, true);
+                Bitmap rotate = Bitmap.createBitmap(m_missile[i].getBitmap(), 0, 0,
+                        m_missile[i].getBitmap().getWidth(), m_missile[i].getBitmap().getHeight(), matrix, true);
 
-                _canvas.drawBitmap(rotate, missile[i].getX(), missile[i].getY(), null);
+                _canvas.drawBitmap(rotate, m_missile[i].getX(), m_missile[i].getY(), null);
             }
         }
     }
@@ -57,8 +55,8 @@ public class Item_Missile extends Item {
         else if (itemState == Constants.STATE_ITEM_ACTIONED) {
             m_outCount = 0;
             for (int i = 0; i < 8; i++) {
-                missile[i].update();
-                if (missile[i].isOut()) {
+                m_missile[i].update();
+                if (m_missile[i].isOut()) {
                     m_outCount++;
                 }
             }

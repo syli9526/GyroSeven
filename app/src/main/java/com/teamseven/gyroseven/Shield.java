@@ -8,6 +8,8 @@ import com.teamseven.gameframework.GraphicObject;
 
 public class Shield extends GraphicObject {
 
+    protected long itemTime = 3000;
+
     protected Rect m_boundBox = new Rect();
     protected Matrix m_matrix;
 
@@ -17,13 +19,8 @@ public class Shield extends GraphicObject {
         m_matrix = new Matrix();
     }
 
-    public void setXY(int _x, int _y) {
-        m_x = _x;
-        m_y = _y;
-    }
-
     public void update(int px, int py, Matrix _matrix) {
-        setXY(px, py);
+        setPosition(px, py);
 
         m_matrix = _matrix;
 

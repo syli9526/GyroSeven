@@ -6,15 +6,16 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
 
-    SensorManager m_sensorManager;
+    private SensorManager m_sensorManager;
+    private Vibrator m_vibrator;
     private IState m_state;
     private GameViewThread m_thread;
 
@@ -24,6 +25,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         m_sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         m_sensorManager.registerListener(this, m_sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
+
+        m_vibrator= (Vibrator) context.getSystemService
+                (Context. VIBRATOR_SERVICE);
 
         AppManager.getInstance().setGameView(this);
         AppManager.getInstance().setResources(getResources());
@@ -95,5 +99,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             _state.destroy();
         _state.init();
         m_state = _state;
+    }
+
+    public Vibrator getVibrator() {
+        return m_vibrator;
     }
 }

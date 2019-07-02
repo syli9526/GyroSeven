@@ -10,7 +10,15 @@ public class Constants {
     public static final int STATE_NORMAL = 0;
     public static final int STATE_OUT = 1;
 
+    // 플레이어 상태
+    public static final int STATE_EXPLANED = 1;
+    public static final int STATE_DEAD = 2;
+    public static final int STATE_ENDED = 3;
+
+
     public static final int[] BACKGROUND = {R.drawable.intro, R.drawable.background1, R.drawable.background2, R.drawable.background3};
+
+    public static final int ITEM_COUNT = 4;
 
     // 아이템 번호
     public static final int ITEM_HEART = 0, ITEM_MISSILE = 1, ITEM_SHIELD = 2, ITEM_BOMB = 3;

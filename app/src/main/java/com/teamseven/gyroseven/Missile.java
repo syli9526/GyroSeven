@@ -22,11 +22,6 @@ public class Missile extends GraphicObject {
         m_out = false;
     }
 
-    public void setXY(int _x, int _y) {
-        m_x = _x;
-        m_y = _y;
-    }
-
     public boolean isOut() {
         return m_out;
     }
@@ -71,6 +66,6 @@ public class Missile extends GraphicObject {
             m_y -= m_speed;
         }
 
-        setXY(m_x, m_y);
+        setPosition(m_x, m_y);
     }
 }

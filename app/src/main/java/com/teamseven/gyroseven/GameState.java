@@ -1,12 +1,12 @@
 package com.teamseven.gyroseven;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -28,13 +28,11 @@ public class GameState implements IState {
     protected ArrayList<Score> m_score = new ArrayList<>();
     // protected Score m_score;
 
-
     private boolean event = false;
     private int frequency = 3000;
     private int level = 1;
     private int cntEnemy2 = 0;
     private long score = 0;
-
 
     // 각 마지막 갱신한 시간
     private long lastEvent;
@@ -42,6 +40,7 @@ public class GameState implements IState {
     private long lastRegenEnemy = System.currentTimeMillis();
     private long lastLevelUp = System.currentTimeMillis();
     private long lastReagenItem = System.currentTimeMillis();
+    private long lastPlayerDamage = System.currentTimeMillis();
 
     private Random randItem = new Random();
     private Random randEnemy = new Random();
@@ -58,7 +57,6 @@ public class GameState implements IState {
         Score s = new Score();
         s.update(0);
         m_score.add(s);
-
     }
 
     @Override
@@ -70,30 +68,8 @@ public class GameState implements IState {
     public void update() {
         long gameTime = System.currentTimeMillis();
         int cnt = 0;
-        m_background.changeBackGround(level);
+
         m_player.update(gameTime);
-        m_player.move(m_pitch, m_roll);
-
-        if (gameTime - lastUpdateScore >= 500) {
-            lastUpdateScore = gameTime;
-            score += level;
-        }
-
-        if (level < 6) {
-            if (gameTime - lastLevelUp >= 20000) {
-                lastEvent = System.currentTimeMillis();
-                event = true;
-                lastLevelUp = gameTime;
-                level++;
-                frequency -= 500;
-                for (Enemy enemy : m_enemylist) enemy.speedUp(1f);
-            }
-        } else {
-            if (gameTime - lastLevelUp >= 1000) {
-                lastLevelUp = gameTime;
-                for (Enemy enemy : m_enemylist) enemy.speedUp(0.1f);
-            }
-        }
 
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
             Enemy enemy = m_enemylist.get(i);
@@ -104,21 +80,49 @@ public class GameState implements IState {
             enemy.update();
         }
 
-        cntEnemy2 = cnt;
+        if (m_player.playerState == Constants.STATE_NORMAL) {
+            m_background.changeBackGround(level);
 
-        for (int i = m_itemlist.size() - 1; i >= 0; i--) {
-            Item item = m_itemlist.get(i);
-            if (item.itemState != Constants.STATE_ITEM_FINISHED) {
-                item.update(gameTime, this);
+            m_player.move(m_pitch, m_roll);
+
+            if (gameTime - lastUpdateScore >= 500) {
+                lastUpdateScore = gameTime;
+                score += level;
             }
-            else {
-                m_itemlist.remove(i);
+
+            if (level < 6) {
+                if (gameTime - lastLevelUp >= 20000) {
+                    lastEvent = System.currentTimeMillis();
+                    event = true;
+                    lastLevelUp = gameTime;
+                    level++;
+                    frequency -= 500;
+                    for (Enemy enemy : m_enemylist) enemy.speedUp(1f);
+                }
+            } else {
+                if (gameTime - lastLevelUp >= 1000) {
+                    lastLevelUp = gameTime;
+                    for (Enemy enemy : m_enemylist) enemy.speedUp(0.1f);
+                }
             }
+
+            cntEnemy2 = cnt;
+
+            for (int i = m_itemlist.size() - 1; i >= 0; i--) {
+                Item item = m_itemlist.get(i);
+                if (item.itemState != Constants.STATE_ITEM_FINISHED) {
+                    item.update(gameTime, this);
+                }
+                else {
+                    m_itemlist.remove(i);
+                }
+            }
+
+            updateScore();
+            makeEnemy();
+            makeItem(gameTime);
+            checkCollision();
         }
-        updateScore();
-        makeEnemy();
-        makeItem(gameTime);
-        checkCollision();
     }
 
     @Override
@@ -192,9 +196,9 @@ public class GameState implements IState {
     }
 
     public void makeItem(long gameTime) {
-        int itemNumber = randItem.nextInt(3);
-        //int itemNumber = 1;
-        if (gameTime - lastReagenItem >= 1000) {
+        int itemNumber = randItem.nextInt(Constants.ITEM_COUNT);
+        //int itemNumber = 3;
+        if (gameTime - lastReagenItem >= 2000) {
             lastReagenItem = gameTime;
 
             Item newItem = new Item(null);
@@ -205,6 +209,8 @@ public class GameState implements IState {
                 newItem = new Item_Missile();
             } else if (itemNumber == Constants.ITEM_SHIELD) {
                 newItem = new Item_Shield();
+            } else if (itemNumber == Constants.ITEM_BOMB) {
+                newItem = new Item_Bomb();
             }
 
             newItem.setPosition(randEnemy.nextInt((AppManager.getInstance().getDeviceSize().x) - newItem.getBitmapWidth()),
@@ -271,18 +277,29 @@ public class GameState implements IState {
     }
 
     public void checkCollision() {
-        for (int i = m_enemylist.size() - 1; i >= 0; i--) {
-            Rect resize = new Rect();
-            resize.set(m_player.m_boundBox.left + 10,
-                    m_player.m_boundBox.top + 10,
-                    m_player.m_boundBox.right - 10,
-                    m_player.m_boundBox.bottom - 10);
-            if (CollisionManager.checkCircleToCircle(
-                    resize, m_enemylist.get(i).m_boundBox)) {
-                m_enemylist.remove(i);
-                m_player.damagePlayer();
-                if (m_player.getLife() <= 0) {
-                    //System.exit(0);
+        long gameTime = System.currentTimeMillis();
+
+        if (gameTime - lastPlayerDamage >= m_player.getDamagedTime()) {
+            m_player.setTwinkle(false);
+            m_player.setCanDamaged(true);
+            for (int i = m_enemylist.size() - 1; i >= 0; i--) {
+                Rect resize = new Rect();
+                resize.set(m_player.m_boundBox.left + 10,
+                        m_player.m_boundBox.top + 10,
+                        m_player.m_boundBox.right - 10,
+                        m_player.m_boundBox.bottom - 10);
+                if (CollisionManager.checkCircleToCircle(
+                        resize, m_enemylist.get(i).m_boundBox)) {
+                    m_enemylist.remove(i);
+                    m_player.damagePlayer();
+                    if (m_player.getLife() <= 0) {
+                        m_player.die();
+                        AppManager.getInstance().getGameView().getVibrator().vibrate(300);
+                    } else
+                        AppManager.getInstance().getGameView().getVibrator().vibrate(100);
+
+                    lastPlayerDamage = gameTime;
+                    m_player.setCanDamaged(false);
                 }
             }
         }
@@ -298,32 +315,40 @@ public class GameState implements IState {
 
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
             for (int j = m_itemlist.size() - 1; j >= 0; j--) {
+
                 if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_MISSILE &&
                         m_itemlist.get(j).itemState == Constants.STATE_ITEM_ACTIONED) {
-                    Item_Missile ms = (Item_Missile)m_itemlist.get(j);
+                    Item_Missile missile = (Item_Missile)m_itemlist.get(j);
                     for (int k = 0; k < 8; k++) {
                         if (CollisionManager.checkBoxToBox(
-                                ms.missile[k].m_boundBox, m_enemylist.get(i).m_boundBox)) {
+                                missile.m_missile[k].m_boundBox, m_enemylist.get(i).m_boundBox)) {
                             score += m_enemylist.get(i).grade;
                             m_enemylist.remove(i);
                             return;
                         }
                     }
                 }
-            }
-        }
 
-        for (int i = m_enemylist.size() - 1; i >= 0; i--) {
-            for (int j = m_itemlist.size() - 1; j >= 0; j--) {
-                if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_SHIELD &&
+                else if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_SHIELD &&
                         m_itemlist.get(j).itemState == Constants.STATE_ITEM_ACTIONED) {
-                    Item_Shield sd = (Item_Shield) m_itemlist.get(j);
-                        if (CollisionManager.checkBoxToBox(
-                                sd.shield.m_boundBox, m_enemylist.get(i).m_boundBox)) {
-                            m_enemylist.remove(i);
-                            return;
+                    Item_Shield shield = (Item_Shield) m_itemlist.get(j);
+                    if (CollisionManager.checkBoxToBox(
+                            shield.m_shield.m_boundBox, m_enemylist.get(i).m_boundBox)) {
+                        m_enemylist.remove(i);
+                        return;
                     }
                 }
+
+                else if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_BOMB &&
+                        m_itemlist.get(j).itemState == Constants.STATE_ITEM_ACTIONED) {
+                    Item_Bomb bomb = (Item_Bomb) m_itemlist.get(j);
+                    if (CollisionManager.checkBoxToBox(
+                            bomb.m_bomb.m_boundBox, m_enemylist.get(i).m_boundBox)) {
+                        m_enemylist.remove(i);
+                        return;
+                    }
+                }
+
             }
         }
     }
