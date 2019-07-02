@@ -63,7 +63,7 @@ public class Player extends SpriteAnimation {
             _canvas.drawBitmap(rotate, m_x, m_y, alpha);
         }
 
-        else if (playerState == Constants.STATE_EXPLANED) {
+        else if (playerState == Constants.STATE_EXPLODED) {
             m_playerDie.draw(_canvas);
         }
     }
@@ -93,7 +93,7 @@ public class Player extends SpriteAnimation {
             }
         }
 
-        if (playerState == Constants.STATE_EXPLANED) {
+        if (playerState == Constants.STATE_EXPLODED) {
             m_playerDie.update(gameTime);
 
             if (gameTime - m_dieStartTime > m_playerDie.aniTime) {
@@ -116,7 +116,7 @@ public class Player extends SpriteAnimation {
     }
 
     public void die() {
-        playerState = Constants.STATE_EXPLANED;
+        playerState = Constants.STATE_EXPLODED;
 
         m_playerDie = new Player_Die();
         m_playerDie.setPosition(getCenterX() - m_playerDie.getBitmapWidth() / 2,

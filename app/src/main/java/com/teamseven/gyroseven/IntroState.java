@@ -6,6 +6,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.IState;
+import com.teamseven.gameframework.SoundManager;
 
 public class IntroState implements IState {
 
@@ -40,6 +41,7 @@ public class IntroState implements IState {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         AppManager.getInstance().getGameView().changeGameState(new GameState());
+        SoundManager.getInstance().play(Constants.EFFECT_START);
         return true;
     }
 

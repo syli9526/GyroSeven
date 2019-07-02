@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.util.Log;
 
 import com.teamseven.gameframework.AppManager;
+import com.teamseven.gameframework.SoundManager;
 
 public class Item_Shield extends Item {
 
@@ -36,6 +37,7 @@ public class Item_Shield extends Item {
     @Override
     public void actionItem(GameState _game) {
         itemState = Constants.STATE_ITEM_ACTIONED;
+        SoundManager.getInstance().play(Constants.EFFECT_SHIELD);
 
         m_shield = new Shield();
         m_shield.setPosition(_game.m_player.getCenterX() - m_shield.getBitmap().getWidth() / 2,

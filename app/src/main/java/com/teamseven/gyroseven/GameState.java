@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.CollisionManager;
 import com.teamseven.gameframework.IState;
+import com.teamseven.gameframework.SoundManager;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -121,6 +122,7 @@ public class GameState implements IState {
 
                 if (level < 6) {
                     if (gameTime - lastLevelUp >= 20000) {
+                        SoundManager.getInstance().play(Constants.EFFECT_LEVELUP);
                         lastEvent = System.currentTimeMillis();
                         event = true;
                         lastLevelUp = gameTime;
@@ -343,16 +345,18 @@ public class GameState implements IState {
                             m_player.m_boundBox.bottom - 10);
                     if (CollisionManager.checkCircleToCircle(
                             resize, m_enemylist.get(i).m_boundBox)) {
+                        lastPlayerDamage = gameTime;
+                        m_player.setCanDamaged(false);
+
                         m_enemylist.remove(i);
                         m_player.damagePlayer();
                         if (m_player.getLife() <= 0) {
                             m_player.die();
                             AppManager.getInstance().getGameView().getVibrator().vibrate(300);
-                        } else
+                        } else {
                             AppManager.getInstance().getGameView().getVibrator().vibrate(100);
-
-                        lastPlayerDamage = gameTime;
-                        m_player.setCanDamaged(false);
+                        }
+                        return;
                     }
                 }
             }

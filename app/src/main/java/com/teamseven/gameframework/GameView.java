@@ -6,11 +6,17 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import com.teamseven.gyroseven.Constants;
+import com.teamseven.gyroseven.R;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
 
@@ -18,6 +24,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private Vibrator m_vibrator;
     private IState m_state;
     private GameViewThread m_thread;
+
+    MediaPlayer m_Sound_Background;
+    SoundPool m_SoundPool;
 
     public GameView(Context context) {
         super(context);
@@ -31,6 +40,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         AppManager.getInstance().setGameView(this);
         AppManager.getInstance().setResources(getResources());
+
+        //m_SoundPool= new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        //m_Sound_BackGround = MediaPlayer.create(context, R.raw.background);
+        SoundManager.getInstance().init(context);
+        SoundManager.getInstance().addSound(Constants.EFFECT_START, R.raw.game_start);
+        SoundManager.getInstance().addSound(Constants.EFFECT_LEVELUP, R.raw.level_up);
+        SoundManager.getInstance().addSound(Constants.EFFECT_HEART, R.raw.heart);
+        SoundManager.getInstance().addSound(Constants.EFFECT_MISSILE, R.raw.missile);
+        SoundManager.getInstance().addSound(Constants.EFFECT_SHIELD, R.raw.shield);
+        SoundManager.getInstance().addSound(Constants.EFFECT_BOMB, R.raw.bomb);
+        //SoundManager.getInstance().addSound(Constants.EFFECT_EXPLODED, R.raw.explosed);
+        SoundManager.getInstance().addSound(Constants.EFFECT_CLICKED, R.raw.clicked);
 
         getHolder().addCallback(this); // 콜백상태 지정
         m_thread = new GameViewThread(getHolder(), this);

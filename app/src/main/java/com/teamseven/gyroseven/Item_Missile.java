@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 
 import com.teamseven.gameframework.AppManager;
+import com.teamseven.gameframework.SoundManager;
 
 public class Item_Missile extends Item {
 
@@ -21,6 +22,7 @@ public class Item_Missile extends Item {
     @Override
     public void actionItem(GameState _game) {
         itemState = Constants.STATE_ITEM_ACTIONED;
+        SoundManager.getInstance().play(Constants.EFFECT_MISSILE);
 
         for (int i = 0; i < 8; i++) {
             m_missile[i] = new Missile();

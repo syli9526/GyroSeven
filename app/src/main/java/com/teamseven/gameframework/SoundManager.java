@@ -34,13 +34,13 @@ public class SoundManager {
     public void play(int _index) {
         float streamVolume = m_audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         streamVolume = streamVolume / m_audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        m_soundPool.play((Integer) m_soundPoolMap.get(_index), streamVolume, streamVolume, 1, 0, .1f);
+        m_soundPool.play((Integer) m_soundPoolMap.get(_index), streamVolume, streamVolume, 1, 0, 1.0f);
     }
 
     public void playLooped(int _index) {
         float streamVolume = m_audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         streamVolume = streamVolume / m_audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        m_soundPool.play((Integer) m_soundPoolMap.get(_index), streamVolume, streamVolume, 1, -1, .1f);
+        m_soundPool.play((Integer) m_soundPoolMap.get(_index), streamVolume, streamVolume, 1, -1, 1.0f);
     }
 
 

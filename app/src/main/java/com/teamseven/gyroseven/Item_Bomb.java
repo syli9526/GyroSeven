@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 import com.teamseven.gameframework.AppManager;
+import com.teamseven.gameframework.SoundManager;
 
 public class Item_Bomb extends Item  {
 
@@ -48,6 +49,7 @@ public class Item_Bomb extends Item  {
     @Override
     public void actionItem(GameState _game) {
         itemState = Constants.STATE_ITEM_ACTIONED;
+        SoundManager.getInstance().play(Constants.EFFECT_BOMB);
 
         m_bomb = new Bomb();
         m_bomb.setPosition(getX() - getBitmapWidth() / 2, getY() - getBitmapHeight());
