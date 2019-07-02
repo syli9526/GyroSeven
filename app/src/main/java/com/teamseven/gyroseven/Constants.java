@@ -24,7 +24,7 @@ public class Constants {
     public static final int[] BACKGROUND = {R.drawable.intro, R.drawable.background1, R.drawable.background2, R.drawable.background3};
 
     // 아이템 개수
-    public static final int ITEM_COUNT = 4;
+    public static final int ITEM_NUMBER = 4;
 
     // 아이템 번호
     public static final int ITEM_HEART = 0, ITEM_MISSILE = 1, ITEM_SHIELD = 2, ITEM_BOMB = 3;

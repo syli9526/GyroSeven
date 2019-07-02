@@ -52,6 +52,7 @@ public class Item_Bomb extends Item  {
         SoundManager.getInstance().play(Constants.EFFECT_BOMB);
 
         m_bomb = new Bomb();
-        m_bomb.setPosition(getX() - getBitmapWidth() / 2, getY() - getBitmapHeight());
+        m_bomb.setPosition(getX() + getBitmapWidth() / 2 - m_bomb.getBitmapWidth() / 2,
+                getY() + getBitmapWidth() / 2 - m_bomb.getBitmapHeight() / 2);
     }
 }

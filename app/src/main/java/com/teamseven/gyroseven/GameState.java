@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.media.MediaPlayer;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -17,6 +18,8 @@ import com.teamseven.gameframework.IState;
 import com.teamseven.gameframework.SoundManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Random;
 
 public class GameState implements IState {
@@ -60,14 +63,13 @@ public class GameState implements IState {
         Score s = new Score();
         s.update(0);
         m_score.add(s);
-
-        SoundManager.getInstance().playBackground();
     }
 
     @Override
     public void destroy() {
 
     }
+
 
     @Override
     public void update() {
@@ -92,9 +94,14 @@ public class GameState implements IState {
 
         } else {
             int cnt = 0;
+
             m_background.changeBackGround(level);
             m_player.update(gameTime);
 
+            // 쉴드 아이템 업데이트
+            updateShield();
+
+            // Enemy 업데이트
             for (int i = m_enemylist.size() - 1; i >= 0; i--) {
                 Enemy enemy = m_enemylist.get(i);
                 enemy.move(m_player.getCenterX(), m_player.getCenterY());
@@ -104,6 +111,7 @@ public class GameState implements IState {
                 enemy.update();
             }
 
+            // Item 업데이트
             for (int i = m_itemlist.size() - 1; i >= 0; i--) {
                 Item item = m_itemlist.get(i);
                 if (item.itemState != Constants.STATE_ITEM_FINISHED) {
@@ -113,6 +121,7 @@ public class GameState implements IState {
                 }
             }
 
+            // Player가 살아있을 때만 실행
             if (m_player.playerState == Constants.STATE_NORMAL) {
                 m_player.move(m_pitch, m_roll);
 
@@ -144,7 +153,8 @@ public class GameState implements IState {
 
                 updateScore();
                 makeEnemy();
-                makeItem(gameTime);
+                if (m_itemlist.size() < 5)
+                    makeItem(gameTime);
                 calculateLevel(gameTime);
             }
             checkCollision();
@@ -253,9 +263,9 @@ public class GameState implements IState {
     }
 
     public void makeItem(long gameTime) {
-        int itemNumber = randItem.nextInt(Constants.ITEM_COUNT);
+        int itemNumber = randItem.nextInt(Constants.ITEM_NUMBER);
         //int itemNumber = 3;
-        if (gameTime - lastReagenItem >= 2000) {
+        if (gameTime - lastReagenItem >= 1000) {
             lastReagenItem = gameTime;
 
             Item newItem = new Item(null);
@@ -275,6 +285,35 @@ public class GameState implements IState {
             m_itemlist.add(newItem);
         }
     }
+
+    public void updateShield() {
+        int shieldCnt = -1;
+
+        // 쉴드가 겹쳐있을 시, 먼저 획득한 쉴드 삭제
+        for (int i = 0; i < m_itemlist.size() - 1; i++) {
+            if (m_itemlist.get(i).ITEM_NUMBER == Constants.ITEM_SHIELD &&
+                    m_itemlist.get(i).itemState == Constants.STATE_ITEM_ACTIONED) {
+                if (shieldCnt == -1)
+                    shieldCnt = i;
+                else {
+                    Log.d("myCheck", "remove shield!");
+                    m_itemlist.remove(shieldCnt);
+                    return;
+                }
+            }
+        }
+
+        shieldCnt = 0;
+        // 쉴드 발동 시, 해당 아이템들을 리스트의 맨 앞으로 정렬
+        for (int i = 0; i < m_itemlist.size() - 1; i++) {
+            if (m_itemlist.get(i).ITEM_NUMBER == Constants.ITEM_SHIELD &&
+                    m_itemlist.get(i).itemState == Constants.STATE_ITEM_ACTIONED) {
+                Collections.swap(m_itemlist, i, shieldCnt);
+                shieldCnt++;
+            }
+        }
+    }
+
 
     public void updateScore() {
 
@@ -330,7 +369,6 @@ public class GameState implements IState {
                 numOfEmemy_2++;
             }
         }
-
     }
 
     public void checkCollision() {

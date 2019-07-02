@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class SoundManager {
     static private SoundManager s_instance;
 
-    MediaPlayer m_mediaPlayer;
+    private MediaPlayer m_mediaPlayer;
 
     private SoundPool m_soundPool;
     private HashMap m_soundPoolMap;
@@ -24,7 +24,11 @@ public class SoundManager {
 
     public void initBackground(Context _context, int _soundID) {
         m_mediaPlayer = MediaPlayer.create(_context, _soundID);
-        m_mediaPlayer.setVolume(15,15);
+        m_mediaPlayer.setVolume(60,60);
+    }
+
+    public void setBackgroundVolume(int _volume) {
+        m_mediaPlayer.setVolume(_volume,_volume);
     }
 
     public void init(Context _context) {

@@ -21,8 +21,11 @@ public class Bomb extends SpriteAnimation {
     public void update(long gameTime) {
         super.update(gameTime);
 
-        m_boundBox.set(m_x, m_y,
-                m_x + getBitmap().getWidth(),
-                m_y + getBitmap().getHeight());
+        m_rect.left = m_currentFrame * m_spriteWIdth + 4;
+        m_rect.right = m_rect.left + m_spriteWIdth - 4;
+
+        m_boundBox.set(m_x - 20, m_y - 20,
+                m_x + getBitmap().getWidth() + 20 ,
+                m_y + getBitmap().getHeight() + 20);
     }
 }
