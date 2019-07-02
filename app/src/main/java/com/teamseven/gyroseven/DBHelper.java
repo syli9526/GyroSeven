@@ -36,7 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void compareDBScore(int score){
         int DBScore = select();
-        if(DBScore==-1) insert(score);
+        if(DBScore == -1) insert(score);
         else if(DBScore < score) insert(score);
     }
 

@@ -35,7 +35,6 @@ public class Player extends SpriteAnimation {
         super.initSpriteData(getBitmap().getWidth() / 4, getBitmap().getHeight(), 8, 4);
         super.setPosition((AppManager.getInstance().getDeviceSize().x - getBitmapWidth()) / 2, AppManager.getInstance().getDeviceSize().y);
 
-
         alpha = new Paint();
 
         m_life = 3;
@@ -146,7 +145,11 @@ public class Player extends SpriteAnimation {
         double dx = -pitch;
         double dy = -roll;
         float degrees = (float) Math.toDegrees(Math.atan2(dx, dy));
-        m_matrix.setRotate(degrees, getBitmapWidth() / 2, getBitmapHeight() / 2);
+        //m_matrix.setRotate(degrees, getBitmapWidth() / 2, getBitmapHeight() / 2);
+
+        m_matrix.reset();
+        //m_matrix.setTranslate(getX(), getY());
+        m_matrix.setRotate(degrees, getCenterX(), getCenterY());
     }
 
     public int getLife() {

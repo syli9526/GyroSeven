@@ -1,10 +1,13 @@
 package com.teamseven.gyroseven;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.media.MediaPlayer;
@@ -101,6 +104,7 @@ public class GameState implements IState {
             // 쉴드 아이템 업데이트
             updateShield();
 
+
             // Enemy 업데이트
             for (int i = m_enemylist.size() - 1; i >= 0; i--) {
                 Enemy enemy = m_enemylist.get(i);
@@ -192,10 +196,7 @@ public class GameState implements IState {
         p.setTextSize(40);
         p.setColor(Color.WHITE);
         String m_level = "Level : " + Integer.toString(level);
-        String m_score = "Number : " + Long.toString(lastScore);
-        _canvas.drawText(m_level, 0, 220, p);
-        _canvas.drawText(m_score, 0, 260, p);
-
+        _canvas.drawText(m_level, 20, 130, p);
     }
 
     @Override
@@ -265,7 +266,7 @@ public class GameState implements IState {
     public void makeItem(long gameTime) {
         int itemNumber = randItem.nextInt(Constants.ITEM_NUMBER);
         //int itemNumber = 3;
-        if (gameTime - lastReagenItem >= 1000) {
+        if (gameTime - lastReagenItem >= 3000) {
             lastReagenItem = gameTime;
 
             Item newItem = new Item(null);

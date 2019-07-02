@@ -62,22 +62,12 @@ public class Item_Shield extends Item {
 
             int x = _game.m_player.getCenterX() - m_shield.getBitmap().getWidth() / 2;
             int y = _game.m_player.getCenterY() - m_shield.getBitmap().getHeight() / 2;
-            /*
-            float sp[] = new float[2];
-            sp[0] = (float)_game.m_player.getCenterX();
-            sp[1] = (float)_game.m_player.getCenterY();
-            float dp[] = new float[2];
 
-            _game.m_player.getMatrix().mapPoints(dp, sp);
-            float fp[] = {dp[0] - sp[0], dp[1] - sp[1]};
-
-            Log.d("myCheck", "px: " + Float.toString(sp[0]));
-            Log.d("myCheck", "py : " + Float.toString(sp[1]));
-            Log.d("myCheck", "dx : " + Float.toString(dp[0]));
-            Log.d("myCheck", "dy : " + Float.toString(dp[1]));
-
-            shield.update((int)sp[0], (int)sp[1], (int)fp[0], (int)fp[1], _game.m_player.getMatrix());
-            */
+            //m_matrix.reset();
+            //m_matrix = _game.m_player.getMatrix();
+            //m_matrix.setTranslate((getX() + _game.m_player.getX()) / 2,
+             //       (getY() + _game.m_player.getY()) / 2);
+            //m_matrix.setTranslate(getX(), getY());
 
             m_shield.update(x, y, _game.m_player.getMatrix());
         }
