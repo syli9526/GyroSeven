@@ -24,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void init(){
 
-        AppManager.getInstance().setMainListener(positiveListener);
-        AppManager.getInstance().setRetryListener(negativeListener);
         AppManager.getInstance().setContext(this);
         AppManager.getInstance().setGame(true);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -47,20 +45,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         gameView.setThreadRun(false);
     }
-
-    private View.OnClickListener positiveListener = new View.OnClickListener() {
-        public void onClick(View v) {
-           AppManager.getInstance().getDialog().dismiss();
-            gameView.changeGameState(new IntroState());
-        }
-    };
-
-    private View.OnClickListener negativeListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            AppManager.getInstance().getDialog().dismiss();
-            gameView.changeGameState(new GameState());
-        }
-    };
 
     @Override
     public void onBackPressed() {

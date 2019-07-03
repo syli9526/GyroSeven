@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.teamseven.gameframework.AppManager;
+
 import org.w3c.dom.Text;
 
 public class EndDialog extends Dialog {
@@ -43,8 +45,8 @@ public class EndDialog extends Dialog {
         txt_current = findViewById(R.id.txtCurrentScore);
 
         //클릭 리스너 셋팅 (클릭버튼이 동작하도록 만들어줌.)
-        m_main_btn.setOnClickListener(mMainBtnListener);
-        m_retry_btn.setOnClickListener(mRetryBtnListener);
+        m_main_btn.setOnClickListener(positiveListener);
+        m_retry_btn.setOnClickListener(negativeListener);
 
         txt_score.setText(String.valueOf(m_best));
         txt_current.setText(String.valueOf(m_current));
@@ -55,10 +57,8 @@ public class EndDialog extends Dialog {
     }
 
     //생성자 생성
-    public EndDialog(@NonNull Context context, View.OnClickListener mainListener, View.OnClickListener retryListener,int current, int best) {
+    public EndDialog(@NonNull Context context,int current, int best) {
         super(context);
-        this.mMainBtnListener = mainListener;
-        this.mRetryBtnListener = retryListener;
         this.m_current = current;
         this.m_best =best;
     }
@@ -66,4 +66,18 @@ public class EndDialog extends Dialog {
     public void showDialog(){
         this.show();
     }
+
+    private View.OnClickListener positiveListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            AppManager.getInstance().getDialog().dismiss();
+            AppManager.getInstance().getGameView().changeGameState(new IntroState());
+        }
+    };
+
+    private View.OnClickListener negativeListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            AppManager.getInstance().getDialog().dismiss();
+            AppManager.getInstance().getGameView().changeGameState(new GameState());
+        }
+    };
 }

@@ -148,8 +148,7 @@ public class GameState implements IState {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                AppManager.getInstance().setDialog(new EndDialog(AppManager.getInstance().getContext(), AppManager.getInstance().getMainListener(),
-                        AppManager.getInstance().getRetryListener(), (int) lastScore, mHelper.compareDBScore((int)lastScore)));
+                AppManager.getInstance().setDialog(new EndDialog(AppManager.getInstance().getContext(), (int) lastScore, mHelper.compareDBScore((int) lastScore)));
                 AppManager.getInstance().getDialog().setCancelable(false);
                 AppManager.getInstance().getDialog().show();
             }
