@@ -53,6 +53,8 @@ public class GameState implements IState {
     private float m_roll;
     private float m_pitch;
 
+    private DBHelper mHelper;
+
     @Override
     public void init() {
         m_player = new Player(AppManager.getInstance().getBitmap(R.drawable.player_sprite));
@@ -62,7 +64,7 @@ public class GameState implements IState {
         Score s = new Score();
         s.update(0);
         m_score.add(s);
-
+        mHelper = new DBHelper(AppManager.getInstance().getContext());
         SoundManager.getInstance().playBackground();
     }
 
@@ -146,6 +148,9 @@ public class GameState implements IState {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                AppManager.getInstance().setDialog(new EndDialog(AppManager.getInstance().getContext(), AppManager.getInstance().getMainListener(),
+                        AppManager.getInstance().getRetryListener(), (int) lastScore, mHelper.compareDBScore((int)lastScore)));
+                AppManager.getInstance().getDialog().setCancelable(false);
                 AppManager.getInstance().getDialog().show();
             }
 
@@ -233,7 +238,7 @@ public class GameState implements IState {
         // 스코어 계산
         if (gameTime - lastUpdateScore >= 500) {
             lastUpdateScore = gameTime;
-            lastScore += (level+timeWeight);
+            lastScore += (level + timeWeight);
         }
 
         // 레벨 계산

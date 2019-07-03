@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="300dp"
     android:layout_height="300dp"
@@ -21,12 +23,19 @@
             android:layout_marginTop="25dp"
             app:srcCompat="@drawable/dialog_score" />
 
-        <!--내용-->
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/txtCurrentScore"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/neodgm"
+            android:textSize="50sp"
+            android:textColor="#000"
+            android:text="00000" />
 
 
         <LinearLayout
@@ -38,13 +47,19 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/neodgm"
+                android:textSize="20sp"
+                android:textColor="#000"
                 android:text="최고점수 " />
 
             <TextView
                 android:id="@+id/txtScore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="30" />
+                android:fontFamily="@font/neodgm"
+                android:textSize="20sp"
+                android:textColor="#000"
+                android:text="0" />
 
         </LinearLayout>
 

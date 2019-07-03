@@ -34,10 +34,18 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.v("DB","DB upgrade");
     }
 
-    public void compareDBScore(int score){
+    public int compareDBScore(int score) {
         int DBScore = select();
-        if(DBScore == -1) insert(score);
-        else if(DBScore < score) insert(score);
+        if (DBScore == -1) {
+            insert(score);
+            return score;
+        } else if (DBScore < score) {
+            insert(score);
+            return score;
+        }
+        else{
+            return DBScore;
+        }
     }
 
     private void insert(int score){

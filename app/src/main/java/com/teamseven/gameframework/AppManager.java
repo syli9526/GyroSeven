@@ -1,11 +1,13 @@
 package com.teamseven.gameframework;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 
 import com.teamseven.gyroseven.EndDialog;
 
@@ -16,6 +18,9 @@ public class AppManager {
     private GameView m_gameView;
     private Resources m_resources;
     private EndDialog m_dialog;
+    private Context m_context;
+    private View.OnClickListener m_main;
+    private View.OnClickListener m_retry;
 
     private boolean game = false;
     private Point size;
@@ -39,6 +44,20 @@ public class AppManager {
         return size;
     }
 
+    public View.OnClickListener getMainListener() {
+        return m_main;
+    }
+    public void setMainListener(View.OnClickListener m_main) {
+        this.m_main = m_main;
+    }
+
+    public View.OnClickListener getRetryListener() {
+        return m_retry;
+    }
+
+    public void setRetryListener(View.OnClickListener m_retry) {
+        this.m_retry = m_retry;
+    }
 
     public EndDialog getDialog() {
         Log.v("Dialog","get dialog");
@@ -48,6 +67,15 @@ public class AppManager {
     public void setDialog(EndDialog m_dialog) {
         this.m_dialog = m_dialog;
         Log.v("Dialog","set dialog");
+    }
+
+
+    public Context getContext() {
+        return m_context;
+    }
+
+    public void setContext(Context m_context) {
+        this.m_context = m_context;
     }
 
     public boolean isGame() {

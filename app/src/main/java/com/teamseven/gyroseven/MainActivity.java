@@ -13,23 +13,23 @@ import com.teamseven.gameframework.GameView;
 public class MainActivity extends AppCompatActivity {
 
     private GameView gameView ;
-    private EndDialog endDialog;
+   // private EndDialog endDialog;
     private long backKeyPressedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         init();
     }
 
     private void init(){
-        endDialog = new EndDialog(this,positiveListener,negativeListener);
-        endDialog.setCancelable(false);
 
-        AppManager.getInstance().setDialog(endDialog);
+        AppManager.getInstance().setMainListener(positiveListener);
+        AppManager.getInstance().setRetryListener(negativeListener);
+        AppManager.getInstance().setContext(this);
         AppManager.getInstance().setGame(true);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 
         gameView = new GameView(this);
         setContentView(gameView);
@@ -50,14 +50,14 @@ public class MainActivity extends AppCompatActivity {
 
     private View.OnClickListener positiveListener = new View.OnClickListener() {
         public void onClick(View v) {
-            endDialog.dismiss();
+           AppManager.getInstance().getDialog().dismiss();
             gameView.changeGameState(new IntroState());
         }
     };
 
     private View.OnClickListener negativeListener = new View.OnClickListener() {
         public void onClick(View v) {
-            endDialog.dismiss();
+            AppManager.getInstance().getDialog().dismiss();
             gameView.changeGameState(new GameState());
         }
     };
