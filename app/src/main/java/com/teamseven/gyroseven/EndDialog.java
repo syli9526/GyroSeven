@@ -52,31 +52,31 @@ public class EndDialog extends Dialog {
         txt_current.setText(String.valueOf(m_current));
     }
 
-    public void setHighScore(int score){
+    public void setHighScore(int score) {
         txt_score.setText(String.valueOf(score));
     }
 
     //생성자 생성
-    public EndDialog(@NonNull Context context,int current, int best) {
+    public EndDialog(@NonNull Context context, int current, int best) {
         super(context);
         this.m_current = current;
-        this.m_best =best;
+        this.m_best = best;
     }
 
-    public void showDialog(){
+    public void showDialog() {
         this.show();
     }
 
     private View.OnClickListener positiveListener = new View.OnClickListener() {
         public void onClick(View v) {
-            AppManager.getInstance().getDialog().dismiss();
+            dismiss();
             AppManager.getInstance().getGameView().changeGameState(new IntroState());
         }
     };
 
     private View.OnClickListener negativeListener = new View.OnClickListener() {
         public void onClick(View v) {
-            AppManager.getInstance().getDialog().dismiss();
+            dismiss();
             AppManager.getInstance().getGameView().changeGameState(new GameState());
         }
     };

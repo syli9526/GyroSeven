@@ -17,10 +17,7 @@ public class AppManager {
 
     private GameView m_gameView;
     private Resources m_resources;
-    private EndDialog m_dialog;
     private Context m_context;
-    private View.OnClickListener m_main;
-    private View.OnClickListener m_retry;
 
     private boolean game = false;
     private Point size;
@@ -43,32 +40,6 @@ public class AppManager {
         }
         return size;
     }
-
-    public View.OnClickListener getMainListener() {
-        return m_main;
-    }
-    public void setMainListener(View.OnClickListener m_main) {
-        this.m_main = m_main;
-    }
-
-    public View.OnClickListener getRetryListener() {
-        return m_retry;
-    }
-
-    public void setRetryListener(View.OnClickListener m_retry) {
-        this.m_retry = m_retry;
-    }
-
-    public EndDialog getDialog() {
-        Log.v("Dialog","get dialog");
-        return m_dialog;
-    }
-
-    public void setDialog(EndDialog m_dialog) {
-        this.m_dialog = m_dialog;
-        Log.v("Dialog","set dialog");
-    }
-
 
     public Context getContext() {
         return m_context;

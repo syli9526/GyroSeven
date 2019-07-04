@@ -37,7 +37,7 @@ public class GameState implements IState {
     private int timeWeight = 0;
     private int numOfEmemy_2 = 0;
     private long lastScore = 0;
-    private boolean intro = true;
+    private boolean subIntro = true;
 
     // 각 마지막 갱신한 시간
     private long lastEvent;
@@ -77,7 +77,7 @@ public class GameState implements IState {
     public void update() {
         long gameTime = System.currentTimeMillis();
 
-        if (intro) {
+        if (subIntro) {
             m_player.setSpeed(0.5f);
             m_player.update(gameTime);
             m_player.move(0, -90);
@@ -88,7 +88,7 @@ public class GameState implements IState {
                 m_alert.setBitmap(AppManager.getInstance().getBitmap(R.drawable.start));
             } else if (m_player.getCenterY() <= AppManager.getInstance().getDeviceSize().y / 2) {
                 AppManager.getInstance().setGame(true);
-                intro = false;
+                subIntro = false;
                 m_alert.setBitmap(AppManager.getInstance().getBitmap(R.drawable.speed_up));
                 m_alert.setPosition((AppManager.getInstance().getDeviceSize().x - m_alert.getBitmap().getWidth()) / 2,
                         (AppManager.getInstance().getDeviceSize().y - m_alert.getBitmap().getHeight()) - 10);
@@ -96,11 +96,8 @@ public class GameState implements IState {
             }
 
         } else {
-            if (!SoundManager.getInstance().isPlayingBackground())
-                SoundManager.getInstance().playBackground();
             int cnt = 0;
 
-            m_background.changeBackGround(level);
             m_player.update(gameTime);
 
             // 쉴드 아이템 업데이트
@@ -135,9 +132,9 @@ public class GameState implements IState {
                 numOfEmemy_2 = cnt;
                 updateScore();
                 makeEnemy();
+                calculateLevel(gameTime);
                 if (m_itemlist.size() < 5)
                     makeItem(gameTime);
-                calculateLevel(gameTime);
             }
             checkCollision();
         }
@@ -148,9 +145,9 @@ public class GameState implements IState {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                AppManager.getInstance().setDialog(new EndDialog(AppManager.getInstance().getContext(), (int) lastScore, mHelper.compareDBScore((int) lastScore)));
-                AppManager.getInstance().getDialog().setCancelable(false);
-                AppManager.getInstance().getDialog().show();
+                EndDialog endDialog = new EndDialog(AppManager.getInstance().getContext(), (int) lastScore, mHelper.compareDBScore((int) lastScore));
+                endDialog.setCancelable(false);
+                endDialog.show();
             }
 
         }, 0);
@@ -243,6 +240,8 @@ public class GameState implements IState {
         // 레벨 계산
         if (level < 6) {
             if (gameTime - lastLevelUp >= 20000) {
+                SoundManager.getInstance().play(Constants.EFFECT_LEVELUP);
+                m_background.changeBackGround(level);
                 lastEvent = System.currentTimeMillis();
                 lastLevelUp = gameTime;
                 event = true;
