@@ -1,14 +1,11 @@
 package com.teamseven.gyroseven;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -23,11 +20,11 @@ import java.util.Random;
 
 public class GameState implements IState {
 
-    protected Player m_player;
-    protected BackGround m_background;
-    protected ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();
-    protected ArrayList<Item> m_itemlist = new ArrayList<Item>();
-    protected Heart m_heart;
+    protected Player m_player;                                          // 플레이어 클래스
+    protected BackGround m_background;                                  // 배경 이미지를 관리하는 클래스
+    protected ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();    // 적을 관리하는 ArrayList
+    protected ArrayList<Item> m_itemlist = new ArrayList<Item>();       // 아이템을 관리하는 ArrayList
+    protected Heart m_heart;                                            // 플레이어 생명 표시 비트맵
     protected Alert m_alert;
     protected ArrayList<Score> m_score = new ArrayList<>();
 
@@ -44,14 +41,14 @@ public class GameState implements IState {
     private long lastUpdateScore = System.currentTimeMillis();
     private long lastRegenEnemy = System.currentTimeMillis();
     private long lastLevelUp = System.currentTimeMillis();
-    private long lastReagenItem = System.currentTimeMillis();
-    private long lastPlayerDamage = System.currentTimeMillis();
+    private long lastReagenItem = System.currentTimeMillis();           // 마지막 아이템 생성 시간
+    private long lastPlayerDamage = System.currentTimeMillis();         // 플레이어가 피해를 입은 시간
 
-    private Random randItem = new Random();
-    private Random randEnemy = new Random();
+    private Random randItem = new Random();                             // 아이템 랜덤 생성 변수
+    private Random randEnemy = new Random();                            // 적 랜덤 생성 변수
 
-    private float m_roll;
-    private float m_pitch;
+    private float m_roll;                                               // 현재 디바이스의 roll 값
+    private float m_pitch;                                              // 현재 디바이스의 pitch 값
 
     private DBHelper mHelper;
 
@@ -65,7 +62,7 @@ public class GameState implements IState {
         s.update(0);
         m_score.add(s);
         mHelper = new DBHelper(AppManager.getInstance().getContext());
-        SoundManager.getInstance().playBackground();
+        SoundManager.getInstance().playBackground(); // 배경음악 재생
     }
 
     @Override
@@ -77,6 +74,7 @@ public class GameState implements IState {
     public void update() {
         long gameTime = System.currentTimeMillis();
 
+        // 게임이 시작되면 실제 게임의 인트로 실행
         if (subIntro) {
             m_player.setSpeed(0.5f);
             m_player.update(gameTime);
@@ -95,14 +93,12 @@ public class GameState implements IState {
                 m_player.setSpeed(8);
             }
 
-        } else {
+        } else { // 실제 게임 상태
             int cnt = 0;
 
-            m_player.update(gameTime);
+            m_player.update(gameTime); // 플레이어 업데이트
 
-            // 쉴드 아이템 업데이트
-            updateShield();
-
+            updateShield(); // 쉴드 아이템 업데이트
 
             // Enemy 업데이트
             for (int i = m_enemylist.size() - 1; i >= 0; i--) {
@@ -117,6 +113,7 @@ public class GameState implements IState {
             // Item 업데이트
             for (int i = m_itemlist.size() - 1; i >= 0; i--) {
                 Item item = m_itemlist.get(i);
+                // 아이템 상태가 ITEM_FINISHED가 아니면 update, 맞으면 삭제
                 if (item.itemState != Constants.STATE_ITEM_FINISHED) {
                     item.update(gameTime, this);
                 } else {
@@ -126,17 +123,18 @@ public class GameState implements IState {
 
             // Player가 살아있을 때만 실행
             if (m_player.playerState == Constants.STATE_NORMAL) {
-                m_player.move(m_pitch, m_roll);
+                m_player.move(m_pitch, m_roll);         // 플레이어 이동
 
-                m_background.changeBackGround(level);
-                numOfEmemy_2 = cnt;
-                updateScore();
-                makeEnemy();
-                calculateLevel(gameTime);
-                if (m_itemlist.size() < 5)
+                m_background.changeBackGround(level);   // 레벨에 따른 배경 변화
+                numOfEmemy_2 = cnt;                     // 현재 Enemy2의 수를 저장
+                updateScore();                          // 점수 업데이트
+                makeEnemy();                            // 적 생성
+                calculateLevel(gameTime);               // 레벨 계산
+                if (m_itemlist.size() < 5)              // 아이템이 5개 미만이면 아이템 생성
                     makeItem(gameTime);
+
+                checkCollision();                       // 충돌체크
             }
-            checkCollision();
         }
     }
 
@@ -156,42 +154,41 @@ public class GameState implements IState {
     @Override
     public void render(Canvas _canvas) {
 
+        // 플에이어 상태가 STATE_ENDED라면 게임이 종료됐음으로 viewDialog를 화면에 띄어줌
         if (m_player.playerState == Constants.STATE_ENDED && AppManager.getInstance().isGame()) {
             viewDialog();
             AppManager.getInstance().setGame(false);
         } else {
-            m_background.draw(_canvas);
-            for (Enemy enemy : m_enemylist) {
+            m_background.draw(_canvas);         // 배경 draw
+            for (Enemy enemy : m_enemylist) {   // 적 draw
                 enemy.draw(_canvas);
             }
-            for (Item item : m_itemlist) {
+            for (Item item : m_itemlist) {      // 아이템 draw
                 item.draw(_canvas);
             }
+            // score 자릿수 별로 위치 조정하고 draw
             for (int i = m_score.size() - 1; i >= 0; i--) {
                 m_score.get(i).setPosition(AppManager.getInstance().getDeviceSize().x - m_score.get(i).getBitmapWidth() * (i + 1) - 10, 5);
                 m_score.get(i).draw(_canvas);
             }
+
+            // 플레이어 하트 draw
             for (int i = 0; i < m_player.getLife(); i++) {
                 m_heart.setPosition(5 + m_heart.getBitmap().getWidth() * i, 5);
                 m_heart.draw(_canvas);
             }
 
-            m_player.draw(_canvas);
+            m_player.draw(_canvas); // 플레이어 draw
 
             if (event) {
                 m_alert.draw(_canvas);
                 if (System.currentTimeMillis() - lastEvent >= 1000)
                     event = false;
             }
-
-            Paint p = new Paint();
-            p.setTextSize(40);
-            p.setColor(Color.WHITE);
-            //String m_level = "Level : " + Integer.toString(level);
-            //_canvas.drawText(m_level, 20, 130, p);
         }
     }
 
+    // 방향 센서에서 이벤트를 받아옴
     @Override
     public void onSensorChanged(SensorEvent event) {
         synchronized (this) {
@@ -200,13 +197,15 @@ public class GameState implements IState {
                     m_pitch = event.values[1];
                     m_roll = event.values[2];
 
+                    // pitch의 최대값, 최솟값 조政
                     if (m_pitch > 90.0f) {
                         m_pitch = 90.0f;
                     } else if (m_pitch < -90.0f) {
                         m_pitch = -90.0f;
                     }
 
-                    m_roll -= 18.0f; // 센서 기준을 약간 기울이게 조정
+                    m_roll -= 18.0f; // 센서의 기준을 디바이스를 약간 기울인 상태로 조정
+                    // roll의 최대값, 최솟값 조政
                     if (m_roll > 90.0f) {
                         m_roll = 90.0f;
                     } else if (m_roll < -90.0f) {
@@ -259,12 +258,13 @@ public class GameState implements IState {
     }
 
     public void makeItem(long gameTime) {
-        int itemNumber = randItem.nextInt(Constants.ITEM_NUMBER);
-        if (gameTime - lastReagenItem >= 5000) {
+        int itemNumber = randItem.nextInt(Constants.ITEM_NUMBER); // 아이템 번호 랜덤 지정
+        if (gameTime - lastReagenItem >= 5000) { // 5초에 한번 생성
             lastReagenItem = gameTime;
 
             Item newItem = new Item(null);
 
+            // 아이템 번호에 따라 아이템 생성
             if (itemNumber == Constants.ITEM_HEART) {
                 newItem = new Item_Heart();
             } else if (itemNumber == Constants.ITEM_MISSILE) {
@@ -275,6 +275,7 @@ public class GameState implements IState {
                 newItem = new Item_Bomb();
             }
 
+            // 위치 지정하고 ArrayList에 추가
             newItem.setPosition(randEnemy.nextInt((AppManager.getInstance().getDeviceSize().x) - newItem.getBitmapWidth()),
                     randEnemy.nextInt((AppManager.getInstance().getDeviceSize().y) - newItem.getBitmapHeight()));
             m_itemlist.add(newItem);
@@ -363,26 +364,38 @@ public class GameState implements IState {
         }
     }
 
+    // 충돌 처리
     public void checkCollision() {
         long gameTime = System.currentTimeMillis();
 
+        // 플레이어가 살아있는 상태에서만 실행되는 충돌처리들
         if (m_player.playerState == Constants.STATE_NORMAL) {
+
+            // 플레이어가 무적상태가 아니라면
             if (gameTime - lastPlayerDamage >= m_player.getDamagedTime()) {
-                m_player.setTwinkle(false);
-                m_player.setCanDamaged(true);
+                m_player.setTwinkle(false);     // 깜빡임 off
+                m_player.setCanDamaged(true);   // 데이미를 입을 수 있는 상태로 지정
+
+                // 플레이어와 적과의 충돌처리
                 for (int i = m_enemylist.size() - 1; i >= 0; i--) {
                     Rect resize = new Rect();
+
+                    // 적과 부딛히는 범위를 줄여 난이도 조정
                     resize.set(m_player.m_boundBox.left + 10,
                             m_player.m_boundBox.top + 10,
                             m_player.m_boundBox.right - 10,
                             m_player.m_boundBox.bottom - 10);
+
+                    // 원충돌 실행
                     if (CollisionManager.checkCircleToCircle(
                             resize, m_enemylist.get(i).m_boundBox)) {
                         lastPlayerDamage = gameTime;
-                        m_player.setCanDamaged(false);
+                        m_player.setCanDamaged(false);  // 무적 상태로 변화
 
-                        m_enemylist.remove(i);
-                        m_player.damagePlayer();
+                        m_enemylist.remove(i);          // 해당 적 삭제
+                        m_player.damagePlayer();        // 생명 1 감소
+
+                        // 적과 충돌 시 진동, 생명이 0이 되면 플레이어 사망
                         if (m_player.getLife() <= 0) {
                             m_player.die();
                             AppManager.getInstance().getGameView().getVibrator().vibrate(300);
@@ -396,30 +409,41 @@ public class GameState implements IState {
             }
         }
 
+        // 플레이어와 아이템 충돌처리
         for (int i = m_itemlist.size() - 1; i >= 0; i--) {
             if (m_itemlist.get(i).itemState == Constants.STATE_ITEM_MADE) {
                 if (CollisionManager.checkCircleToCircle(
                         m_player.m_boundBox, m_itemlist.get(i).m_boundBox)) {
+                    // 충돌시 해당 아이템의 actionItem 메소드 실행
                     m_itemlist.get(i).actionItem(this);
                 }
             }
         }
 
+        // 적과 발동된 아이템들의 충돌처리
         for (int i = m_enemylist.size() - 1; i >= 0; i--) {
             for (int j = m_itemlist.size() - 1; j >= 0; j--) {
 
+                // 1. 미사일과 적 충돌처리
+                // 충돌한 아이템이 미사일이고, 아이템이 발동된 상태라면 충돌 확인
                 if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_MISSILE &&
                         m_itemlist.get(j).itemState == Constants.STATE_ITEM_ACTIONED) {
                     Item_Missile missile = (Item_Missile) m_itemlist.get(j);
+                    // 8개 미사일을 반복문을 통해 모두 체크
                     for (int k = 0; k < 8; k++) {
+                        // 충돌이 잘 되도록 사각 충돌 실행
                         if (CollisionManager.checkBoxToBox(
                                 missile.m_missile[k].m_boundBox, m_enemylist.get(i).m_boundBox)) {
-                            lastScore += m_enemylist.get(i).grade;
-                            m_enemylist.remove(i);
+                            lastScore += m_enemylist.get(i).grade; // 적에 따라 점수 증가
+                            m_enemylist.remove(i); // 해당 적 삭제
                             return;
                         }
                     }
-                } else if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_SHIELD &&
+                }
+
+                // 2. 쉴드와 적 충돌처리
+                // 충돌한 아이템이 쉴드이고, 아이템이 발동된 상태라면 충돌 확인
+                else if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_SHIELD &&
                         m_itemlist.get(j).itemState == Constants.STATE_ITEM_ACTIONED) {
                     Item_Shield shield = (Item_Shield) m_itemlist.get(j);
                     if (CollisionManager.checkBoxToBox(
@@ -428,7 +452,11 @@ public class GameState implements IState {
                         m_enemylist.remove(i);
                         return;
                     }
-                } else if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_BOMB &&
+                }
+
+                // 3. 폭탄과 적 충돌처리
+                // 충돌한 아이템이 폭탄이고, 아이템이 발동된 상태라면 충돌 확인
+                else if (m_itemlist.get(j).ITEM_NUMBER == Constants.ITEM_BOMB &&
                         m_itemlist.get(j).itemState == Constants.STATE_ITEM_ACTIONED) {
                     Item_Bomb bomb = (Item_Bomb) m_itemlist.get(j);
                     if (CollisionManager.checkBoxToBox(

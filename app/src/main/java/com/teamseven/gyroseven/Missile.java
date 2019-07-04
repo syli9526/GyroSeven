@@ -1,7 +1,5 @@
 package com.teamseven.gyroseven;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import com.teamseven.gameframework.AppManager;
@@ -10,8 +8,8 @@ import com.teamseven.gameframework.GraphicObject;
 public class Missile extends GraphicObject {
 
     protected float m_speed;
-    protected int moveState;
-    protected boolean m_out;
+    protected int moveState;    // 이동 패턴
+    protected boolean m_out;    // 화면을 벗어났는지 체크
 
     protected Rect m_boundBox = new Rect();
 
@@ -27,16 +25,19 @@ public class Missile extends GraphicObject {
     }
 
     public void update() {
+        // 화면 밖으로 나감을 체크
         if (getY() > AppManager.getInstance().getDeviceSize().y || getX() > AppManager.getInstance().getDeviceSize().x
                 || getY() < -getBitmap() .getHeight() || getX() < -getBitmap().getWidth()) {
             m_out = true;
             return;
         }
 
+        // 미사일 충돌범위 설정
         m_boundBox.set(m_x - getBitmap().getWidth()/3, m_y - getBitmap().getWidth()/3,
                 m_x + getBitmap().getWidth() + getBitmap().getWidth()/3,
                 m_y + getBitmap().getHeight() + getBitmap().getHeight()/3);
 
+        // 패턴에 따라 좌표 이동
         if (moveState == Constants.MOVE_PATTERN_1) {
             m_y -= m_speed;
         }
