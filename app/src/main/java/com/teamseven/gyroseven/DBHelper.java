@@ -7,9 +7,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
+
     public static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "HighScore.db";
-    private static final String NAME = "highest";
+    private static final String DATABASE_NAME = "GyroSevenScore.db";
+
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -17,18 +18,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String SaveHighScoreSQL = "create table tb_highScore" +
-                "(_id integer primary key autoincrement, " +
-                "score)";
+        String SaveHighScoreSQL = "create table tb_bestScore" + "(_id integer primary key autoincrement, " + "score)";
         sqLiteDatabase.execSQL(SaveHighScoreSQL);
 
-        Log.v("DB", "DB 생성");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         if (newVersion == DATABASE_VERSION) {
-            sqLiteDatabase.execSQL("drop table tb_highScore");
+            sqLiteDatabase.execSQL("drop table tb_bestScore");
             onCreate(sqLiteDatabase);
         }
         Log.v("DB", "DB upgrade");
@@ -36,10 +34,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public int compareDBScore(int score) {
         int DBScore = select();
+        Log.v("DB", String.valueOf(DBScore));
         if (DBScore == -1) {
+            Log.v("DB", "insert_>");
             insert(score);
             return score;
         } else if (DBScore < score) {
+            Log.v("DB", "update_>");
             update(score);
             return score;
         } else {
@@ -50,38 +51,29 @@ public class DBHelper extends SQLiteOpenHelper {
     private void insert(int score) {
         SQLiteDatabase db = getWritableDatabase();
 
-        //db.execSQL("insert into tb_Closet (img, name, season, color, value) values (?,?,?,?,?)", new String[]{photoURI.toString(), strName, strSeason, String.valueOf(nColor), strValue});
-        db.execSQL("insert into tb_highScore (score) values (" + score + ")");
+        db.execSQL("insert into tb_bestScore (score) values (" + score + ")");
         db.close();
 
-        Log.v("DB", "DB insert : " + score);
     }
 
     private void update(int bestscore) {
         SQLiteDatabase db = getWritableDatabase();
 
-        //UPDATE MyTable SET Age=11 WHERE Name='Tom'
-        //db.execSQL("insert into tb_Closet (img, name, season, color, value) values (?,?,?,?,?)", new String[]{photoURI.toString(), strName, strSeason, String.valueOf(nColor), strValue});
-        db.execSQL("update tb_highScore set score = " + bestscore + " where _id = 1 ");
+        db.execSQL("update tb_bestScore set score = " + bestscore + " where _id = 1 ");
         db.close();
 
-        Log.v("DB", "DB update : " + bestscore);
     }
 
     private int select() {
         SQLiteDatabase db = getWritableDatabase();
-        int score = 0;
-        String name;
-        Cursor cursor = db.rawQuery("select * from tb_highScore where _id = 1", null);
+        int score = -1;
+        Cursor cursor = db.rawQuery("select * from tb_bestScore where _id = 1", null);
         while (cursor.moveToNext()) {
             score = cursor.getInt(1);
-            Log.v("DB", "DB select : " + score);
         }
 
-        if (cursor == null)
-            return -1;
-        else
-            return score;
+        if (cursor == null) return -1;
+        else return score;
 
     }
 }

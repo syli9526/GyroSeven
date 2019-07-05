@@ -2,13 +2,13 @@ package com.teamseven.gyroseven;
 
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.GraphicObject;
 
 public class Shield extends GraphicObject {
 
+    // 쉴드 지속 시간
     protected long itemTime = 3000;
 
     protected Rect m_boundBox = new Rect();
@@ -22,11 +22,15 @@ public class Shield extends GraphicObject {
 
     public void update(Player _player) {
 
-        //m_matrix.setRotate(degrees, (getX() * 2 + getBitmap().getWidth()) / 2,
-        //        (getY() * 2 + getBitmap().getHeight()) / 2);
-
+        // 쉴드의 기본 위치 설정
         int x = _player.getCenterX() - getBitmap().getWidth() / 2;
         int y = _player.getCenterY() - getBitmap().getHeight() / 2;
+
+        // 플레이어의 회전 각도에 따라서 플레이어 좌표 값의 오차가 일어난다.
+        // ex) 플레이어 Bitmap 회전율 0도에서 90도까지 같은 x, y좌표 유지
+        // 플레이어 x, y 좌표 오차는 45도(135, 225, 315)에서 가장 크다.
+        // 오차 범위만큼 쉴드의 실제 위치도 그에 맞게 조정한 알고리즘, weight로 오차 범위의 가중치를 구한 후
+        // 수식을 통해 오차 값을 계산한다.
 
         float degrees = _player.getDegrees();
 
@@ -63,11 +67,12 @@ public class Shield extends GraphicObject {
         } else if (315 < degrees && degrees <= 360) {
             weight = 360 - degrees;
         }
-
+        // 40은 플레이어의 비트맵 크기
         double value = Math.sqrt(40 * 40 / 2) / 45.0f * weight;
 
         setPosition(x + (int)value, y + (int)value);
 
+        // 충돌범위 업데이트
         m_boundBox.set(m_x, m_y,
                 m_x + getBitmap().getWidth(),
                 m_y + getBitmap().getHeight());

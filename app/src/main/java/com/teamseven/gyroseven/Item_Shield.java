@@ -2,16 +2,14 @@ package com.teamseven.gyroseven;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Point;
-import android.util.Log;
 
 import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.SoundManager;
 
 public class Item_Shield extends Item {
 
-    Shield m_shield;
-    private long startTime = 0;
+    Shield m_shield;            // 쉴드 이미지를 가진 클래스
+    private long startTime = 0; // 쉴드 발동 시장 저장
 
     public Item_Shield() {
         super(AppManager.getInstance().getBitmap(R.drawable.item_shield));

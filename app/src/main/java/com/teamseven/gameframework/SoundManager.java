@@ -5,18 +5,17 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class SoundManager {
     static private SoundManager s_instance;
 
     private MediaPlayer m_mediaPlayer;
-
     private SoundPool m_soundPool;
     private HashMap m_soundPoolMap;
     private AudioManager m_audioManager;
     private Context m_activity;
-
     public static SoundManager getInstance() {
         if (s_instance == null) return s_instance = new SoundManager();
         return s_instance;
@@ -45,10 +44,19 @@ public class SoundManager {
 
     public void playBackground() {
         m_mediaPlayer.start();
+
     }
 
     public void stopBackground() {
         m_mediaPlayer.stop();
+        try {
+            m_mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void pauseBackground(){
+        m_mediaPlayer.pause();
     }
 
     public boolean isPlayingBackground() {
@@ -66,6 +74,5 @@ public class SoundManager {
         streamVolume = streamVolume / m_audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         m_soundPool.play((Integer) m_soundPoolMap.get(_index), streamVolume, streamVolume, 1, -1, 1.0f);
     }
-
 
 }

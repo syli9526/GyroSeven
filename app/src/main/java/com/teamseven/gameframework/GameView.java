@@ -25,8 +25,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private IState m_state;
     private GameViewThread m_thread;
 
-    public MediaPlayer m_Sound_Background;
-
     public GameView(Context context) {
         super(context);
         setFocusable(true);
@@ -48,7 +46,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         SoundManager.getInstance().addSound(Constants.EFFECT_MISSILE, R.raw.missile);
         SoundManager.getInstance().addSound(Constants.EFFECT_SHIELD, R.raw.shield);
         SoundManager.getInstance().addSound(Constants.EFFECT_BOMB, R.raw.bomb);
-        //SoundManager.getInstance().addSound(Constants.EFFECT_EXPLODED, R.raw.explosed);
         SoundManager.getInstance().addSound(Constants.EFFECT_CLICKED, R.raw.clicked);
 
         getHolder().addCallback(this); // 콜백상태 지정
@@ -118,6 +115,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             _state.destroy();
         _state.init();
         m_state = _state;
+    }
+
+    public IState getState(){
+        return m_state;
     }
 
     public Vibrator getVibrator() {

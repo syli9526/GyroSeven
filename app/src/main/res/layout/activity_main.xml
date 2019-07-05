@@ -11,9 +11,13 @@
     <LinearLayout
         android:layout_width="400dp"
         android:layout_height="400dp"
-        android:orientation="vertical"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:background="@drawable/dialog_window"
         android:gravity="center"
-        android:background="@drawable/dialog_window">
+        android:orientation="vertical">
 
 
         <ImageView
@@ -26,16 +30,16 @@
 
         <TextView
             android:id="@+id/txtCurrentScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:fontFamily="@font/neodgm"
-            android:textSize="50sp"
+            android:gravity="center"
+            android:text="00000"
             android:textColor="#000"
-            android:text="00000" />
+            android:textSize="50sp" />
 
 
         <LinearLayout
@@ -48,18 +52,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/neodgm"
-                android:textSize="20sp"
+                android:text="최고점수 "
                 android:textColor="#000"
-                android:text="최고점수 " />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/txtScore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/neodgm"
-                android:textSize="20sp"
+                android:text="0"
                 android:textColor="#000"
-                android:text="0" />
+                android:textSize="20sp" />
 
         </LinearLayout>
 
@@ -75,17 +79,17 @@
                 android:id="@+id/mainButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@null"
-                app:srcCompat="@drawable/btn_main"
-                android:layout_weight="1"/>
+                app:srcCompat="@drawable/btn_main" />
 
             <ImageButton
                 android:id="@+id/retryButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@null"
-                app:srcCompat="@drawable/btn_retry"
-                android:layout_weight="1"/>
+                app:srcCompat="@drawable/btn_retry" />
         </LinearLayout>
     </LinearLayout>
 

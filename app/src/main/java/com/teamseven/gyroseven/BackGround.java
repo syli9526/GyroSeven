@@ -17,25 +17,27 @@ public class BackGround extends SpriteAnimation {
 
         for (int i = 0; i < 4; i++) {
             bitmap[i] = AppManager.getInstance().getBitmap(Constants.BACKGROUND[i]);
-            if (i == 0) bitmap[i] = Bitmap.createScaledBitmap(bitmap[i], AppManager.getInstance().getDeviceSize().x * 2, AppManager.getInstance().getDeviceSize().y, true);
-            else bitmap[i] = Bitmap.createScaledBitmap(bitmap[i], AppManager.getInstance().getDeviceSize().x, AppManager.getInstance().getDeviceSize().y, true);
+            if (i == 0)
+                bitmap[i] = Bitmap.createScaledBitmap(bitmap[i], AppManager.getInstance().getDeviceSize().x * 2, AppManager.getInstance().getDeviceSize().y, true);
+            else
+                bitmap[i] = Bitmap.createScaledBitmap(bitmap[i], AppManager.getInstance().getDeviceSize().x, AppManager.getInstance().getDeviceSize().y, true);
         }
 
         switch (backType) {
             case 0:
                 super.m_bitmap = bitmap[0];
-                super.initSpriteData(m_bitmap.getWidth()/2, m_bitmap.getHeight(), 4, 2);
+                super.initSpriteData(m_bitmap.getWidth() / 2, m_bitmap.getHeight(), 4, 2);
                 break;
             case 1:
                 super.m_bitmap = bitmap[1];
-                super.initSpriteData( m_bitmap.getWidth(),  m_bitmap.getHeight(), 1, 1);
+                super.initSpriteData(m_bitmap.getWidth(), m_bitmap.getHeight(), 1, 1);
                 break;
         }
     }
 
-    public void changeBackGround(int back){
+    public void changeBackGround(int back) {
 
-        switch (back){
+        switch (back) {
             case 1:
             case 2:
                 super.m_bitmap = bitmap[1];
@@ -57,7 +59,7 @@ public class BackGround extends SpriteAnimation {
     @Override
     public void update(long gameTime) {
         super.update(gameTime);
-        m_BoundBox.set(getX(), getY(), getX() + getBitmapWidth() , getY() + getBitmapHeight());
+        m_BoundBox.set(getX(), getY(), getX() + getBitmapWidth(), getY() + getBitmapHeight());
     }
 
 }
