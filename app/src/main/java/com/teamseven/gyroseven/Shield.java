@@ -32,6 +32,20 @@ public class Shield extends GraphicObject {
 
         degrees += 180;
         double weight = 0;
+
+        /*
+        int i = 0;
+
+        while (degrees > 90) {
+            degrees -= 90;
+            i++;
+        }
+        if (0 < degrees && degrees <= 45) {
+            weight = degrees - 90 * i;
+        } else if (45 < degrees && degrees <= 90) {
+            weight = (90 * (i + 1)) - degrees;
+        }
+        */
         if (0 < degrees && degrees <= 45) {
             weight = degrees;
         } else if (45 < degrees && degrees <= 90) {
@@ -49,6 +63,7 @@ public class Shield extends GraphicObject {
         } else if (315 < degrees && degrees <= 360) {
             weight = 360 - degrees;
         }
+
         double value = Math.sqrt(40 * 40 / 2) / 45.0f * weight;
 
         setPosition(x + (int)value, y + (int)value);
