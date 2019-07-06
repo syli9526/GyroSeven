@@ -2,21 +2,26 @@ package com.teamseven.gameframework;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.DisplayMetrics;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.teamseven.gyroseven.Constants;
+import com.teamseven.gyroseven.R;
 
-import com.teamseven.gyroseven.GameState;
+public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
 
-public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-
-    public static int SCREEN_WIDTH;
-    public static int SCREEN_HEIGHT;
-
+    private SensorManager m_sensorManager;
+    private Vibrator m_vibrator;
     private IState m_state;
     private GameViewThread m_thread;
 
@@ -24,18 +29,28 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         setFocusable(true);
 
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        SCREEN_WIDTH = dm.widthPixels;
-        SCREEN_HEIGHT = dm.heightPixels;
+        m_sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        m_sensorManager.registerListener(this, m_sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
+
+        m_vibrator= (Vibrator) context.getSystemService
+                (Context. VIBRATOR_SERVICE);
 
         AppManager.getInstance().setGameView(this);
         AppManager.getInstance().setResources(getResources());
-        AppManager.getInstance().setContext(context);
+
+        SoundManager.getInstance().initBackground(context, R.raw.background_game);
+        SoundManager.getInstance().init(context);
+        SoundManager.getInstance().addSound(Constants.EFFECT_START, R.raw.game_start);
+        SoundManager.getInstance().addSound(Constants.EFFECT_LEVELUP, R.raw.level_up);
+        SoundManager.getInstance().addSound(Constants.EFFECT_HEART, R.raw.heart);
+        SoundManager.getInstance().addSound(Constants.EFFECT_MISSILE, R.raw.missile);
+        SoundManager.getInstance().addSound(Constants.EFFECT_SHIELD, R.raw.shield);
+        SoundManager.getInstance().addSound(Constants.EFFECT_BOMB, R.raw.bomb);
+        SoundManager.getInstance().addSound(Constants.EFFECT_CLICKED, R.raw.clicked);
 
         getHolder().addCallback(this); // 콜백상태 지정
         m_thread = new GameViewThread(getHolder(), this);
 
-        changeGameState(new GameState());
     }
 
     @Override
@@ -53,11 +68,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         boolean retry = true;
         m_thread.setRunning(false);
-        while(retry) {
+        while (retry) {
             try {
                 m_thread.join();
                 retry = false;
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
         }
     }
 
@@ -73,7 +89,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         m_state.onTouchEvent(event);
-
         return super.onTouchEvent(event);
     }
 
@@ -84,10 +99,31 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        m_state.onSensorChanged(sensorEvent);
+        invalidate();
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
     public void changeGameState(IState _state) {
-        if(m_state != null)
+        if (m_state != null)
             _state.destroy();
         _state.init();
         m_state = _state;
     }
+
+    public IState getState(){
+        return m_state;
+    }
+
+    public Vibrator getVibrator() {
+        return m_vibrator;
+    }
+
+    public void setThreadRun(boolean flag){ m_thread.setRunning(flag);}
 }
