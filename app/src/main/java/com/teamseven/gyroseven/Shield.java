@@ -36,6 +36,20 @@ public class Shield extends GraphicObject {
 
         degrees += 180;
         double weight = 0;
+
+        /*
+        int i = 0;
+
+        while (degrees > 90) {
+            degrees -= 90;
+            i++;
+        }
+        if (0 < degrees && degrees <= 45) {
+            weight = degrees - 90 * i;
+        } else if (45 < degrees && degrees <= 90) {
+            weight = (90 * (i + 1)) - degrees;
+        }
+        */
         if (0 < degrees && degrees <= 45) {
             weight = degrees;
         } else if (45 < degrees && degrees <= 90) {

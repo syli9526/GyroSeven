@@ -14,11 +14,6 @@ public class Bomb extends SpriteAnimation {
     public Bomb() {
         super(AppManager.getInstance().getBitmap(R.drawable.bomb));
         super.initSpriteData(getBitmap().getWidth() / 8, getBitmap().getHeight(), 8, 8);
-
-        // 폭발 범위 지정
-        m_boundBox.set(m_x , m_y ,
-                m_x + getBitmapWidth() ,
-                m_y + getBitmapHeight());
     }
 
     @Override
@@ -28,5 +23,10 @@ public class Bomb extends SpriteAnimation {
         // 폭발 스프라이트 출력시 약간의 오차 조정
         m_rect.left = m_currentFrame * m_spriteWIdth + 4;
         m_rect.right = m_rect.left + m_spriteWIdth - 4;
+
+        // 폭발 범위 지정
+        m_boundBox.set(m_x , m_y ,
+                m_x + getBitmapWidth() ,
+                m_y + getBitmapHeight());
     }
 }

@@ -4,13 +4,14 @@ import android.graphics.Canvas;
 import android.hardware.SensorEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
 import com.teamseven.gameframework.AppManager;
 import com.teamseven.gameframework.IState;
 import com.teamseven.gameframework.SoundManager;
 
 public class IntroState implements IState {
 
-   private BackGround m_background;
+    private BackGround m_background;
 
     @Override
     public void init() {
@@ -40,7 +41,8 @@ public class IntroState implements IState {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        AppManager.getInstance().getGameView().changeGameState(new GameState());
+        GameState gameState = new GameState();
+        AppManager.getInstance().getGameView().changeGameState(gameState, true);
         SoundManager.getInstance().play(Constants.EFFECT_START);
         return true;
     }

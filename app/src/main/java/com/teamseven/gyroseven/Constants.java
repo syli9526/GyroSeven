@@ -21,6 +21,7 @@ public class Constants {
     public static final int STATE_ENDED = 3;
 
 
+    // 배경 리소스 NUMBER
     public static final int[] BACKGROUND = {R.drawable.intro, R.drawable.background1, R.drawable.background2, R.drawable.background3};
 
     // 아이템 개수

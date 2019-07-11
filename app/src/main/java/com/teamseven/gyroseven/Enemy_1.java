@@ -13,7 +13,7 @@ public class Enemy_1 extends Enemy {
     @Override
     public void move(int x, int y) {
 
-        super.move(x, y);
+        // 적의 패턴에 따라 좌표 변경
         switch (movePattern) {
 
             case Constants.MOVE_PATTERN_1:
@@ -33,6 +33,8 @@ public class Enemy_1 extends Enemy {
                 setY(getY() - (int) speed * y_weight);
                 break;
         }
+
+        super.move(x, y);
 
     }
 }

@@ -23,8 +23,6 @@ public class EndDialog extends Dialog {
     private int m_best;
     private int m_current;
 
-    private View.OnClickListener mMainBtnListener;
-    private View.OnClickListener mRetryBtnListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +37,14 @@ public class EndDialog extends Dialog {
         setContentView(R.layout.activity_main);
 
         //셋팅
-        m_main_btn = (ImageButton) findViewById(R.id.mainButton);
-        m_retry_btn = (ImageButton) findViewById(R.id.retryButton);
+        m_main_btn = findViewById(R.id.mainButton);
+        m_retry_btn =  findViewById(R.id.retryButton);
         txt_score = findViewById(R.id.txtScore);
         txt_current = findViewById(R.id.txtCurrentScore);
 
         //클릭 리스너 셋팅 (클릭버튼이 동작하도록 만들어줌.)
-        m_main_btn.setOnClickListener(positiveListener);
-        m_retry_btn.setOnClickListener(negativeListener);
+        m_main_btn.setOnClickListener(mMainBtnListener);
+        m_retry_btn.setOnClickListener(mRetryBtnListener);
 
         txt_score.setText(String.valueOf(m_best));
         txt_current.setText(String.valueOf(m_current));
@@ -67,17 +65,18 @@ public class EndDialog extends Dialog {
         this.show();
     }
 
-    private View.OnClickListener positiveListener = new View.OnClickListener() {
+    // 버튼에 등록할 리스너들
+    private View.OnClickListener mMainBtnListener = new View.OnClickListener() {
         public void onClick(View v) {
             dismiss();
-            AppManager.getInstance().getGameView().changeGameState(new IntroState());
+            AppManager.getInstance().getGameView().changeGameState(new IntroState(), true);
         }
     };
 
-    private View.OnClickListener negativeListener = new View.OnClickListener() {
+    private View.OnClickListener mRetryBtnListener = new View.OnClickListener() {
         public void onClick(View v) {
             dismiss();
-            AppManager.getInstance().getGameView().changeGameState(new GameState());
+            AppManager.getInstance().getGameView().changeGameState(new GameState(),true);
         }
     };
 }

@@ -12,12 +12,14 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "GyroSevenScore.db";
 
 
+    // 초기화
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        // 해당 테이블이 없을 경우 만들어줌
         String SaveHighScoreSQL = "create table tb_bestScore" + "(_id integer primary key autoincrement, " + "score)";
         sqLiteDatabase.execSQL(SaveHighScoreSQL);
 
@@ -25,6 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        // 버전이 바뀌면 테이블 삭제하고 다시 만듬
         if (newVersion == DATABASE_VERSION) {
             sqLiteDatabase.execSQL("drop table tb_bestScore");
             onCreate(sqLiteDatabase);
@@ -32,10 +35,12 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.v("DB", "DB upgrade");
     }
 
+    // 현재 스코어랑 저장된 스코어를 비교해 최고 점수 저장.
     public int compareDBScore(int score) {
         int DBScore = select();
         Log.v("DB", String.valueOf(DBScore));
         if (DBScore == -1) {
+            // 자료가 없을경우는 그냥 현재 점수 저장
             Log.v("DB", "insert_>");
             insert(score);
             return score;
@@ -48,6 +53,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
+    // 삽입
     private void insert(int score) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -56,6 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    // 업데이트
     private void update(int bestscore) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -64,6 +71,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    // 검색
     private int select() {
         SQLiteDatabase db = getWritableDatabase();
         int score = -1;

@@ -25,22 +25,22 @@ public class GameState implements IState {
     protected ArrayList<Enemy> m_enemylist = new ArrayList<Enemy>();    // 적을 관리하는 ArrayList
     protected ArrayList<Item> m_itemlist = new ArrayList<Item>();       // 아이템을 관리하는 ArrayList
     protected Heart m_heart;                                            // 플레이어 생명 표시 비트맵
-    protected Alert m_alert;
-    protected ArrayList<Score> m_score = new ArrayList<>();
+    protected Alert m_alert;                                            // ready, start, speedup을 알려 줄 이미지를 관리
+    protected ArrayList<Score> m_score = new ArrayList<>();             // 현재 스코어를 알려줄 이미지를 관리할 arraylist
 
-    private boolean event = false;
-    private int frequency = 3000;
-    private int level = 1;
-    private int timeWeight = 0;
-    private int numOfEmemy_2 = 0;
-    private long lastScore = 0;
-    private boolean subIntro = true;
+    private boolean event = false;                                      // ready, start, speedup가 나타날 때 true로 변경해 알려줌
+    private int frequency = 3000;                                       // 적이 나타나는 빈도
+    private int level = 1;                                              // 현재 레벨
+    private int timeWeight = 0;                                         // 6레벨 이상일때 시간에 따라 점수를 증가시키기 위한 가중치
+    private int numOfEmemy_2 = 0;                                       // 화면에 나온 enemy2의 수
+    private long currentScore = 0;                                      // 현재 스코어
+    private boolean subIntro = true;                                    // gameState의 인트로를 부를 flage
 
     // 각 마지막 갱신한 시간
-    private long lastEvent;
-    private long lastUpdateScore = System.currentTimeMillis();
-    private long lastRegenEnemy = System.currentTimeMillis();
-    private long lastLevelUp = System.currentTimeMillis();
+    private long lastEvent;                                             // 이벤트가 발생한 시간
+    private long lastUpdateScore = System.currentTimeMillis();          // 마지막 스코어 업데이트 시간
+    private long lastRegenEnemy = System.currentTimeMillis();           // 마지막 적 생성 시간
+    private long lastLevelUp = System.currentTimeMillis();              // 마지막 레벨 업 시간
     private long lastReagenItem = System.currentTimeMillis();           // 마지막 아이템 생성 시간
     private long lastPlayerDamage = System.currentTimeMillis();         // 플레이어가 피해를 입은 시간
 
@@ -54,6 +54,7 @@ public class GameState implements IState {
 
     @Override
     public void init() {
+        // 초기화
         m_player = new Player(AppManager.getInstance().getBitmap(R.drawable.player_sprite));
         m_background = new BackGround(level);
         m_heart = new Heart();
@@ -76,9 +77,13 @@ public class GameState implements IState {
 
         // 게임이 시작되면 실제 게임의 인트로 실행
         if (subIntro) {
+
             m_player.setSpeed(0.5f);
             m_player.update(gameTime);
             m_player.move(0, -90);
+
+            // 위치에 따라 이벤트를 발생시키고(ready, start),
+            // 플레이어 위치가 중앙으로 가면 실제 게임 상태로 넘어감
             if (m_player.getCenterY() >= AppManager.getInstance().getDeviceSize().y / 4 * 3) {
                 event = true;
             } else if (m_player.getCenterY() > AppManager.getInstance().getDeviceSize().y / 2) {
@@ -143,7 +148,8 @@ public class GameState implements IState {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                EndDialog endDialog = new EndDialog(AppManager.getInstance().getContext(), (int) lastScore, mHelper.compareDBScore((int) lastScore));
+                // 다이얼 로그 생성
+                EndDialog endDialog = new EndDialog(AppManager.getInstance().getContext(), (int) currentScore, mHelper.compareDBScore((int) currentScore));
                 endDialog.setCancelable(false);
                 endDialog.show();
             }
@@ -180,7 +186,7 @@ public class GameState implements IState {
 
             m_player.draw(_canvas); // 플레이어 draw
 
-            if (event) {
+            if (event) { // 이벤트가 true일때 1초동안 ready, start, speedup등을 보여줌
                 m_alert.draw(_canvas);
                 if (System.currentTimeMillis() - lastEvent >= 1000)
                     event = false;
@@ -233,7 +239,7 @@ public class GameState implements IState {
         // 스코어 계산
         if (gameTime - lastUpdateScore >= 500) {
             lastUpdateScore = gameTime;
-            lastScore += (level + timeWeight);
+            currentScore += (level + timeWeight);
         }
 
         // 레벨 계산
@@ -249,10 +255,11 @@ public class GameState implements IState {
                 for (Enemy enemy : m_enemylist) enemy.speedUp(1f);
             }
         } else {
+            // 레벨 6 이상일 경우 시간 가중치를 증가시켜 스코어를 더 높일 수 있도록 함
             if (gameTime - lastLevelUp >= 1000) {
                 lastLevelUp = gameTime;
                 timeWeight += 1;
-                for (Enemy enemy : m_enemylist) enemy.speedUp(timeWeight);
+                for (Enemy enemy : m_enemylist) enemy.speedUp(1f);
             }
         }
     }
@@ -309,9 +316,9 @@ public class GameState implements IState {
         }
     }
 
+    // 화면에 보여줄 스코어 이미지를 업데이트
     public void updateScore() {
-
-        long num = lastScore;
+        long num = currentScore;
         int idx = 0;
         while (num / 10 != 0) {
             if (idx >= m_score.size()) makeScore(num % 10);
@@ -324,6 +331,7 @@ public class GameState implements IState {
 
     }
 
+    // 자리수가 넘어가면 이미지 객체 하나 더 생성
     public void makeScore(long num) {
         Score s = new Score();
         s.update(num);
@@ -332,6 +340,7 @@ public class GameState implements IState {
 
     public void makeEnemy() {
 
+        // 적 생성 위치 결정
         int posX[] = {randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), AppManager.getInstance().getDeviceSize().x, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x), 0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().x)};
         int posY[] = {0, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), AppManager.getInstance().getDeviceSize().y, randEnemy.nextInt(AppManager.getInstance().getDeviceSize().y), 0};
 
@@ -339,9 +348,10 @@ public class GameState implements IState {
             lastRegenEnemy = System.currentTimeMillis();
             Enemy crw[] = new Enemy_1[4];
 
+            // enemy1은 가중치를 랜덤으로 결정해 적 마다 속도와 방향이 달라질 수 있도록 함.
             for (int i = 0; i < crw.length; i++) {
                 crw[i] = new Enemy_1();
-                crw[i].x_weight = randEnemy.nextInt(3 + level);
+                crw[i].x_weight = randEnemy.nextInt(3 + level) + 1;
                 crw[i].y_weight = randEnemy.nextInt(3 + level);
                 crw[i].movePattern = i + randEnemy.nextInt(1);
 
@@ -352,6 +362,7 @@ public class GameState implements IState {
                 m_enemylist.add(crw[i]);
             }
 
+            // enemy2의 수와 레벨과 같은 수 만큼 생성 
             while (numOfEmemy_2 < level) {
                 Enemy enemy = new Enemy_2();
                 int idx = randEnemy.nextInt(4);
@@ -434,7 +445,7 @@ public class GameState implements IState {
                         // 충돌이 잘 되도록 사각 충돌 실행
                         if (CollisionManager.checkBoxToBox(
                                 missile.m_missile[k].m_boundBox, m_enemylist.get(i).m_boundBox)) {
-                            lastScore += m_enemylist.get(i).grade; // 적에 따라 점수 증가
+                            currentScore += m_enemylist.get(i).grade; // 적에 따라 점수 증가
                             m_enemylist.remove(i); // 해당 적 삭제
                             return;
                         }
@@ -448,7 +459,7 @@ public class GameState implements IState {
                     Item_Shield shield = (Item_Shield) m_itemlist.get(j);
                     if (CollisionManager.checkBoxToBox(
                             shield.m_shield.m_boundBox, m_enemylist.get(i).m_boundBox)) {
-                        lastScore += m_enemylist.get(i).grade;
+                        currentScore += m_enemylist.get(i).grade;
                         m_enemylist.remove(i);
                         return;
                     }
@@ -461,7 +472,7 @@ public class GameState implements IState {
                     Item_Bomb bomb = (Item_Bomb) m_itemlist.get(j);
                     if (CollisionManager.checkBoxToBox(
                             bomb.m_bomb.m_boundBox, m_enemylist.get(i).m_boundBox)) {
-                        lastScore += m_enemylist.get(i).grade;
+                        currentScore += m_enemylist.get(i).grade;
                         m_enemylist.remove(i);
                         return;
                     }
