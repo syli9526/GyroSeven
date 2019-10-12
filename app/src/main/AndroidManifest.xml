@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.teamseven.gyroseven">
+    package="com.team7even.gyroseven">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <application
@@ -13,7 +13,7 @@
 
         >
 
-        <activity android:name=".MainActivity"
+        <activity android:name="com.team7even.gyroseven.MainActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
